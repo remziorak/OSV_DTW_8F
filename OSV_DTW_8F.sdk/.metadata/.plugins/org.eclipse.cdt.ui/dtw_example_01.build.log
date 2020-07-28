@@ -1,0 +1,15 @@
+05:57:55 **** Auto Build of configuration Debug for project dtw_example_01 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_example_01.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_example_01.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_example_01.d" -MT"src/dtw_example_01.o" -o "src/dtw_example_01.o" "../src/dtw_example_01.cc"
+../src/dtw_example_01.cc:4:10: fatal error: xparameters.h: No such file or directory
+ #include "xparameters.h"
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+make: *** [src/subdir.mk:26: src/dtw_example_01.o] Error 1
+
+05:57:56 Build Finished (took 904ms)
+

@@ -1,0 +1,8 @@
+set_property IOSTANDARD LVCMOS33 [get_ports spi_rtl_io0_io]
+set_property IOSTANDARD LVCMOS33 [get_ports spi_rtl_io1_io]
+set_property IOSTANDARD LVCMOS33 [get_ports spi_rtl_sck_io]
+set_property IOSTANDARD LVCMOS33 [get_ports spi_rtl_ss_io]
+set_property PACKAGE_PIN W8 [get_ports spi_rtl_io0_io]
+set_property PACKAGE_PIN U7 [get_ports spi_rtl_io1_io]
+set_property PACKAGE_PIN V7 [get_ports spi_rtl_sck_io]
+set_property PACKAGE_PIN V8 [get_ports spi_rtl_ss_io]

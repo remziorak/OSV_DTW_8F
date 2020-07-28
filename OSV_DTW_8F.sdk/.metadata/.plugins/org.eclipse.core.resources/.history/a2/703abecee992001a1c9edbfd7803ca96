@@ -1,0 +1,31 @@
+
+
+#include <stdio.h>
+#include "xil_printf.h"
+#include "xparameters.h"
+
+
+XGpio Gpio; /* The Instance of the GPIO Driver */
+
+
+void setup()
+{
+
+    print("Hello World\n\r");
+    print("Hello World\n\r");
+    print("Hello World\n\r");
+
+	int Status;
+
+	/* Initialize the GPIO driver */
+	Status = XGpio_Initialize(&Gpio, XPAR_GPIO_0_BASEADDR);
+	if (Status != XST_SUCCESS) {
+		xil_printf("Gpio Initialization Failed\r\n");
+		return XST_FAILURE;
+	}
+
+}
+
+void loop(){
+	print("Þu an loop içindeyiz :)");
+}

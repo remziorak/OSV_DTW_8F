@@ -1,0 +1,18 @@
+
+
+#include <stdio.h>
+#include "xil_printf.h"
+
+
+void setup()
+{
+
+    print("Hello World\n\r");
+    print("Hello World\n\r");
+    print("Hello World\n\r");
+
+}
+
+void loop(){
+	print("Þu an loop içindeyiz :)");
+}

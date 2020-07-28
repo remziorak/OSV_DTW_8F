@@ -1,0 +1,40 @@
+03:33:36 **** Auto Build of configuration Debug for project dtw_09 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_09.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_09.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_09.d" -MT"src/dtw_09.o" -o "src/dtw_09.o" "../src/dtw_09.cc"
+../src/dtw_09.cc: In function 'void loop()':
+../src/dtw_09.cc:60:25: error: 'XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR' was not declared in this scope
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_09.cc:60:25: note: in definition of macro 'DTW_2F_BASEADDR'
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_09.cc:60:25: note: suggested alternative: 'XPAR_DTW_8F_32BIT_0_BASEADDR'
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_09.cc:60:25: note: in definition of macro 'DTW_2F_BASEADDR'
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_09.cc:63:25: error: 'XPAR_DTW_4F_32BIT_0_BASEADDR' was not declared in this scope
+ #define DTW_4F_BASEADDR XPAR_DTW_4F_32BIT_0_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_09.cc:460:15: note: in expansion of macro 'DTW_4F_BASEADDR'
+    Xil_Out32((DTW_4F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+../src/dtw_09.cc:63:25: note: suggested alternative: 'XPAR_DTW_8F_32BIT_0_BASEADDR'
+ #define DTW_4F_BASEADDR XPAR_DTW_4F_32BIT_0_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_09.cc:460:15: note: in expansion of macro 'DTW_4F_BASEADDR'
+    Xil_Out32((DTW_4F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+../src/dtw_09.cc: At global scope:
+../src/dtw_09.cc:94:12: warning: 'led_data' defined but not used [-Wunused-variable]
+ static int led_data;
+            ^~~~~~~~
+make: *** [src/subdir.mk:26: src/dtw_09.o] Error 1
+
+03:33:37 Build Finished (took 867ms)
+

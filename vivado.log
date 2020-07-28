@@ -1,0 +1,423 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Tue Jul 28 03:03:50 2020
+# Process ID: 4684
+# Current directory: C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent10156 C:\Users\REV\VivadoProjects\ZYNQ_DTW\OSV_DTW_8F\OSV_DTW_8F.xpr
+# Log file: C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/vivado.log
+# Journal file: C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.xpr
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/REV/VivadoProjects/vivado-library-master'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/ip_repo'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2019.1/data/ip'.
+open_project: Time (s): cpu = 00:00:36 ; elapsed = 00:00:24 . Memory (MB): peak = 944.480 ; gain = 288.617
+update_compile_order -fileset sources_1
+open_bd_design {C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/design_1.bd}
+Adding component instance block -- xilinx.com:ip:processing_system7:5.5 - processing_system7_0
+Adding component instance block -- digilentinc.com:IP:PmodMTDS:1.0 - PmodMTDS_0
+Adding component instance block -- xilinx.com:ip:axi_interconnect:2.1 - ps7_0_axi_periph
+Adding component instance block -- xilinx.com:ip:axi_crossbar:2.1 - xbar
+Adding component instance block -- xilinx.com:ip:axi_protocol_converter:2.1 - auto_pc
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - rst_ps7_0_50M
+Adding component instance block -- xilinx.com:ip:axi_gpio:2.0 - axi_gpio_1
+Adding component instance block -- xilinx.com:ip:axi_gpio:2.0 - axi_gpio_2
+Adding component instance block -- xilinx.com:ip:axi_gpio:2.0 - axi_gpio_0
+Adding component instance block -- xilinx.com:user:dtw_2F_32bit:1.0 - dtw_2F_32bit_0
+Adding component instance block -- xilinx.com:user:dtw_4F_32bit:1.0 - dtw_4F_32bit_0
+Adding component instance block -- xilinx.com:user:dtw_8F_32bit:1.0 - dtw_8F_32bit_0
+Successfully read diagram <design_1> from BD file <C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/design_1.bd>
+open_bd_design: Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 1144.000 ; gain = 19.723
+delete_bd_objs [get_bd_intf_nets ps7_0_axi_periph_M07_AXI] [get_bd_cells dtw_4F_32bit_0]
+delete_bd_objs [get_bd_intf_nets ps7_0_axi_periph_M06_AXI] [get_bd_cells dtw_2F_32bit_0]
+regenerate_bd_layout
+delete_bd_objs [get_bd_intf_nets ps7_0_axi_periph_M08_AXI]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/processing_system7_0/FCLK_CLK0 (10 MHz)} Clk_slave {/processing_system7_0/FCLK_CLK0 (10 MHz)} Clk_xbar {/processing_system7_0/FCLK_CLK0 (10 MHz)} Master {/processing_system7_0/M_AXI_GP0} Slave {/dtw_8F_32bit_0/s00_axi} intc_ip {/ps7_0_axi_periph} master_apm {0}}  [get_bd_intf_pins dtw_8F_32bit_0/s00_axi]
+startgroup
+set_property -dict [list CONFIG.NUM_MI {7}] [get_bd_cells ps7_0_axi_periph]
+endgroup
+regenerate_bd_layout
+delete_bd_objs [get_bd_intf_nets ps7_0_axi_periph_M03_AXI]
+delete_bd_objs [get_bd_intf_nets ps7_0_axi_periph_M04_AXI]
+delete_bd_objs [get_bd_intf_nets ps7_0_axi_periph_M05_AXI]
+delete_bd_objs [get_bd_intf_nets ps7_0_axi_periph_M06_AXI]
+connect_bd_intf_net -boundary_type upper [get_bd_intf_pins ps7_0_axi_periph/M03_AXI] [get_bd_intf_pins dtw_8F_32bit_0/s00_axi]
+regenerate_bd_layout
+startgroup
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/processing_system7_0/FCLK_CLK0 (10 MHz)} Clk_slave {/processing_system7_0/FCLK_CLK0 (10 MHz)} Clk_xbar {/processing_system7_0/FCLK_CLK0 (10 MHz)} Master {/processing_system7_0/M_AXI_GP0} Slave {/axi_gpios/S_AXI} intc_ip {/ps7_0_axi_periph} master_apm {0}}  [get_bd_intf_pins axi_gpios/S_AXI]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/processing_system7_0/FCLK_CLK0 (10 MHz)} Clk_slave {/processing_system7_0/FCLK_CLK0 (10 MHz)} Clk_xbar {/processing_system7_0/FCLK_CLK0 (10 MHz)} Master {/processing_system7_0/M_AXI_GP0} Slave {/axi_gpios/S_AXI1} intc_ip {/ps7_0_axi_periph} master_apm {0}}  [get_bd_intf_pins axi_gpios/S_AXI1]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/processing_system7_0/FCLK_CLK0 (10 MHz)} Clk_slave {/processing_system7_0/FCLK_CLK0 (10 MHz)} Clk_xbar {/processing_system7_0/FCLK_CLK0 (10 MHz)} Master {/processing_system7_0/M_AXI_GP0} Slave {/axi_gpios/S_AXI2} intc_ip {/ps7_0_axi_periph} master_apm {0}}  [get_bd_intf_pins axi_gpios/S_AXI2]
+INFO: [BD 5-455] Automation on '/axi_gpios/axi_gpio_1/S_AXI' will not be run, since it is obsolete due to previously run automations
+INFO: [BD 5-455] Automation on '/axi_gpios/axi_gpio_2/S_AXI' will not be run, since it is obsolete due to previously run automations
+INFO: [BD 5-455] Automation on '/axi_gpios/axi_gpio_0/S_AXI' will not be run, since it is obsolete due to previously run automations
+endgroup
+regenerate_bd_layout
+regenerate_bd_layout
+set_property location {1 243 482} [get_bd_cells rst_ps7_0_50M]
+regenerate_bd_layout
+set_property location {1 247 383} [get_bd_cells rst_ps7_0_50M]
+set_property location {1 228 491} [get_bd_cells rst_ps7_0_50M]
+validate_bd_design
+WARNING: [BD 41-927] Following properties on pin /PmodMTDS_0/s_axi_aclk have been updated from connected ip. They may not be synchronized with cell properties. You can set property on pin directly to confirm the value and resolve the warning.
+	CLK_DOMAIN=design_1_processing_system7_0_0_FCLK_CLK0 
+make_wrapper -files [get_files C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/design_1.bd] -top
+INFO: [BD 41-1662] The design 'design_1.bd' is already validated. Therefore parameter propagation will not be re-run.
+Wrote  : <C:\Users\REV\VivadoProjects\ZYNQ_DTW\OSV_DTW_8F\OSV_DTW_8F.srcs\sources_1\bd\design_1\design_1.bd> 
+Wrote  : <C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ui/bd_1f5defd0.ui> 
+VHDL Output written to : C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v
+VHDL Output written to : C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/sim/design_1.v
+VHDL Output written to : C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v
+generate_target all [get_files  C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/design_1.bd]
+INFO: [BD 41-1662] The design 'design_1.bd' is already validated. Therefore parameter propagation will not be re-run.
+VHDL Output written to : C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v
+VHDL Output written to : C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/sim/design_1.v
+VHDL Output written to : C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v
+INFO: [BD 41-1029] Generation completed for the IP Integrator block processing_system7_0 .
+INFO: [BD 41-1029] Generation completed for the IP Integrator block PmodMTDS_0 .
+INFO: [BD 41-1029] Generation completed for the IP Integrator block ps7_0_axi_periph/xbar .
+INFO: [BD 41-1029] Generation completed for the IP Integrator block rst_ps7_0_50M .
+INFO: [BD 41-1029] Generation completed for the IP Integrator block axi_gpios/axi_gpio_0 .
+INFO: [BD 41-1029] Generation completed for the IP Integrator block axi_gpios/axi_gpio_1 .
+INFO: [BD 41-1029] Generation completed for the IP Integrator block axi_gpios/axi_gpio_2 .
+INFO: [BD 41-1029] Generation completed for the IP Integrator block dtw_8F_32bit_0 .
+WARNING: [IP_Flow 19-4994] Overwriting existing constraint file 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_auto_pc_0/design_1_auto_pc_0_ooc.xdc'
+INFO: [BD 41-1029] Generation completed for the IP Integrator block ps7_0_axi_periph/s00_couplers/auto_pc .
+Exporting to file C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/hw_handoff/design_1.hwh
+Generated Block Design Tcl file C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/hw_handoff/design_1_bd.tcl
+Generated Hardware Definition File C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.hwdef
+catch { config_ip_cache -export [get_ips -all design_1_xbar_0] }
+catch { config_ip_cache -export [get_ips -all design_1_auto_pc_0] }
+export_ip_user_files -of_objects [get_files C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/design_1.bd] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/design_1.bd]
+launch_runs  {design_1_xbar_0_synth_1 design_1_auto_pc_0_synth_1}
+[Tue Jul 28 03:09:20 2020] Launched design_1_xbar_0_synth_1, design_1_auto_pc_0_synth_1...
+Run output will be captured here:
+design_1_xbar_0_synth_1: C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.runs/design_1_xbar_0_synth_1/runme.log
+design_1_auto_pc_0_synth_1: C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.runs/design_1_auto_pc_0_synth_1/runme.log
+export_simulation -of_objects [get_files C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/design_1.bd] -directory C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.ip_user_files/sim_scripts -ip_user_files_dir C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.ip_user_files -ipstatic_source_dir C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.cache/compile_simlib/modelsim} {questa=C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.cache/compile_simlib/questa} {riviera=C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.cache/compile_simlib/riviera} {activehdl=C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.runs/synth_1
+
+launch_runs impl_1 -to_step write_bitstream
+[Tue Jul 28 03:12:08 2020] Launched design_1_auto_pc_0_synth_1, synth_1...
+Run output will be captured here:
+design_1_auto_pc_0_synth_1: C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.runs/design_1_auto_pc_0_synth_1/runme.log
+synth_1: C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.runs/synth_1/runme.log
+[Tue Jul 28 03:12:08 2020] Launched impl_1...
+Run output will be captured here: C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.runs/impl_1/runme.log
+file copy -force C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.runs/impl_1/design_1_wrapper.sysdef C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.sdk/design_1_wrapper.hdf
+
+launch_sdk -workspace C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.sdk -hwspec C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.sdk/design_1_wrapper.hdf
+INFO: [Vivado 12-393] Launching SDK...
+INFO: [Vivado 12-417] Running xsdk -workspace C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.sdk -hwspec C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.sdk/design_1_wrapper.hdf
+INFO: [Vivado 12-3157] SDK launch initiated. Please check console for any further messages.
+create_ip_run [get_files -of_objects [get_fileset sources_1] C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/design_1.bd]
+synth_design -rtl -name rtl_1
+Command: synth_design -rtl -name rtl_1
+Starting synth_design
+Using part: xc7z020clg400-1
+Top: design_1_wrapper
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1734.945 ; gain = 171.270
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'design_1_wrapper' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v:12]
+INFO: [Synth 8-6157] synthesizing module 'design_1' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:320]
+INFO: [Synth 8-6157] synthesizing module 'design_1_PmodMTDS_0_0' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_PmodMTDS_0_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_PmodMTDS_0_0' (1#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_PmodMTDS_0_0_stub.v:6]
+WARNING: [Synth 8-7023] instance 'PmodMTDS_0' of module 'design_1_PmodMTDS_0_0' has 67 connections declared, but only 65 given [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:617]
+INFO: [Synth 8-6157] synthesizing module 'axi_gpios_imp_OLLEZU' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:12]
+INFO: [Synth 8-6157] synthesizing module 'design_1_axi_gpio_0_0' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_axi_gpio_0_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_axi_gpio_0_0' (2#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_axi_gpio_0_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_axi_gpio_1_0' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_axi_gpio_1_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_axi_gpio_1_0' (3#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_axi_gpio_1_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_axi_gpio_2_0' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_axi_gpio_2_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_axi_gpio_2_0' (4#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_axi_gpio_2_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'axi_gpios_imp_OLLEZU' (5#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:12]
+INFO: [Synth 8-6157] synthesizing module 'design_1_dtw_8F_32bit_0_3' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_dtw_8F_32bit_0_3_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_dtw_8F_32bit_0_3' (6#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_dtw_8F_32bit_0_3_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'design_1_processing_system7_0_0' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_processing_system7_0_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_processing_system7_0_0' (7#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_processing_system7_0_0_stub.v:6]
+WARNING: [Synth 8-7023] instance 'processing_system7_0' of module 'design_1_processing_system7_0_0' has 66 connections declared, but only 64 given [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:765]
+INFO: [Synth 8-6157] synthesizing module 'design_1_ps7_0_axi_periph_0' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:1017]
+INFO: [Synth 8-6157] synthesizing module 'm00_couplers_imp_15SPJYW' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2220]
+INFO: [Synth 8-6155] done synthesizing module 'm00_couplers_imp_15SPJYW' (8#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2220]
+INFO: [Synth 8-6157] synthesizing module 'm01_couplers_imp_XU9C55' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2352]
+INFO: [Synth 8-6155] done synthesizing module 'm01_couplers_imp_XU9C55' (9#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2352]
+INFO: [Synth 8-6157] synthesizing module 'm02_couplers_imp_14WQB4R' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2484]
+INFO: [Synth 8-6155] done synthesizing module 'm02_couplers_imp_14WQB4R' (10#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2484]
+INFO: [Synth 8-6157] synthesizing module 'm03_couplers_imp_YFYJ3U' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2616]
+INFO: [Synth 8-6155] done synthesizing module 'm03_couplers_imp_YFYJ3U' (11#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2616]
+INFO: [Synth 8-6157] synthesizing module 'm04_couplers_imp_17KQ732' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2762]
+INFO: [Synth 8-6155] done synthesizing module 'm04_couplers_imp_17KQ732' (12#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2762]
+INFO: [Synth 8-6157] synthesizing module 'm05_couplers_imp_VQEDA7' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2894]
+INFO: [Synth 8-6155] done synthesizing module 'm05_couplers_imp_VQEDA7' (13#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2894]
+INFO: [Synth 8-6157] synthesizing module 'm06_couplers_imp_16EQN6L' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:3026]
+INFO: [Synth 8-6155] done synthesizing module 'm06_couplers_imp_16EQN6L' (14#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:3026]
+INFO: [Synth 8-6157] synthesizing module 's00_couplers_imp_UYSKKA' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:3158]
+INFO: [Synth 8-6157] synthesizing module 'design_1_auto_pc_0' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_auto_pc_0' (15#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 's00_couplers_imp_UYSKKA' (16#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:3158]
+INFO: [Synth 8-6157] synthesizing module 'design_1_xbar_0' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_xbar_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_xbar_0' (17#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_xbar_0_stub.v:6]
+WARNING: [Synth 8-689] width (12) of port connection 'm_axi_arprot' does not match port width (21) of module 'design_1_xbar_0' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2181]
+WARNING: [Synth 8-689] width (12) of port connection 'm_axi_awprot' does not match port width (21) of module 'design_1_xbar_0' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:2185]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_ps7_0_axi_periph_0' (18#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:1017]
+INFO: [Synth 8-6157] synthesizing module 'design_1_rst_ps7_0_50M_0' [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_rst_ps7_0_50M_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_rst_ps7_0_50M_0' (19#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/realtime/design_1_rst_ps7_0_50M_0_stub.v:6]
+WARNING: [Synth 8-7023] instance 'rst_ps7_0_50M' of module 'design_1_rst_ps7_0_50M_0' has 10 connections declared, but only 6 given [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:1008]
+INFO: [Synth 8-6155] done synthesizing module 'design_1' (20#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/synth/design_1.v:320]
+INFO: [Synth 8-6157] synthesizing module 'IOBUF' [C:/Xilinx/Vivado/2019.1/scripts/rt/data/unisim_comp.v:36115]
+	Parameter DRIVE bound to: 12 - type: integer 
+	Parameter IBUF_LOW_PWR bound to: TRUE - type: string 
+	Parameter IOSTANDARD bound to: DEFAULT - type: string 
+	Parameter SLEW bound to: SLOW - type: string 
+INFO: [Synth 8-6155] done synthesizing module 'IOBUF' (21#1) [C:/Xilinx/Vivado/2019.1/scripts/rt/data/unisim_comp.v:36115]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_wrapper' (22#1) [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v:12]
+WARNING: [Synth 8-3331] design s00_couplers_imp_UYSKKA has unconnected port M_ACLK
+WARNING: [Synth 8-3331] design s00_couplers_imp_UYSKKA has unconnected port M_ARESETN
+WARNING: [Synth 8-3331] design m06_couplers_imp_16EQN6L has unconnected port M_ACLK
+WARNING: [Synth 8-3331] design m06_couplers_imp_16EQN6L has unconnected port M_ARESETN
+WARNING: [Synth 8-3331] design m06_couplers_imp_16EQN6L has unconnected port S_ACLK
+WARNING: [Synth 8-3331] design m06_couplers_imp_16EQN6L has unconnected port S_ARESETN
+WARNING: [Synth 8-3331] design m05_couplers_imp_VQEDA7 has unconnected port M_ACLK
+WARNING: [Synth 8-3331] design m05_couplers_imp_VQEDA7 has unconnected port M_ARESETN
+WARNING: [Synth 8-3331] design m05_couplers_imp_VQEDA7 has unconnected port S_ACLK
+WARNING: [Synth 8-3331] design m05_couplers_imp_VQEDA7 has unconnected port S_ARESETN
+WARNING: [Synth 8-3331] design m04_couplers_imp_17KQ732 has unconnected port M_ACLK
+WARNING: [Synth 8-3331] design m04_couplers_imp_17KQ732 has unconnected port M_ARESETN
+WARNING: [Synth 8-3331] design m04_couplers_imp_17KQ732 has unconnected port S_ACLK
+WARNING: [Synth 8-3331] design m04_couplers_imp_17KQ732 has unconnected port S_ARESETN
+WARNING: [Synth 8-3331] design m03_couplers_imp_YFYJ3U has unconnected port M_ACLK
+WARNING: [Synth 8-3331] design m03_couplers_imp_YFYJ3U has unconnected port M_ARESETN
+WARNING: [Synth 8-3331] design m03_couplers_imp_YFYJ3U has unconnected port S_ACLK
+WARNING: [Synth 8-3331] design m03_couplers_imp_YFYJ3U has unconnected port S_ARESETN
+WARNING: [Synth 8-3331] design m02_couplers_imp_14WQB4R has unconnected port M_ACLK
+WARNING: [Synth 8-3331] design m02_couplers_imp_14WQB4R has unconnected port M_ARESETN
+WARNING: [Synth 8-3331] design m02_couplers_imp_14WQB4R has unconnected port S_ACLK
+WARNING: [Synth 8-3331] design m02_couplers_imp_14WQB4R has unconnected port S_ARESETN
+WARNING: [Synth 8-3331] design m01_couplers_imp_XU9C55 has unconnected port M_ACLK
+WARNING: [Synth 8-3331] design m01_couplers_imp_XU9C55 has unconnected port M_ARESETN
+WARNING: [Synth 8-3331] design m01_couplers_imp_XU9C55 has unconnected port S_ACLK
+WARNING: [Synth 8-3331] design m01_couplers_imp_XU9C55 has unconnected port S_ARESETN
+WARNING: [Synth 8-3331] design m00_couplers_imp_15SPJYW has unconnected port M_ACLK
+WARNING: [Synth 8-3331] design m00_couplers_imp_15SPJYW has unconnected port M_ARESETN
+WARNING: [Synth 8-3331] design m00_couplers_imp_15SPJYW has unconnected port S_ACLK
+WARNING: [Synth 8-3331] design m00_couplers_imp_15SPJYW has unconnected port S_ARESETN
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M00_ACLK
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M00_ARESETN
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M01_ACLK
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M01_ARESETN
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M02_ACLK
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M02_ARESETN
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M03_ACLK
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M03_ARESETN
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M04_ACLK
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M04_ARESETN
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M05_ACLK
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M05_ARESETN
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M06_ACLK
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port M06_ARESETN
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port S00_ACLK
+WARNING: [Synth 8-3331] design design_1_ps7_0_axi_periph_0 has unconnected port S00_ARESETN
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[31]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[30]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[29]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[28]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[27]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[26]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[25]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[24]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[23]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[22]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[21]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[20]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[19]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[18]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[17]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[16]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[15]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[14]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[13]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[12]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[11]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[10]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_araddr[9]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[31]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[30]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[29]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[28]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[27]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[26]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[25]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[24]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[23]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[22]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[21]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[20]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[19]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[18]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[17]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[16]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[15]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[14]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[13]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[12]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[11]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[10]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI1_awaddr[9]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI2_araddr[31]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI2_araddr[30]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI2_araddr[29]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI2_araddr[28]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI2_araddr[27]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI2_araddr[26]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI2_araddr[25]
+WARNING: [Synth 8-3331] design axi_gpios_imp_OLLEZU has unconnected port S_AXI2_araddr[24]
+INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 1785.113 ; gain = 221.438
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:09 ; elapsed = 00:00:08 . Memory (MB): peak = 1785.113 ; gain = 221.438
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:09 ; elapsed = 00:00:08 . Memory (MB): peak = 1785.113 ; gain = 221.438
+---------------------------------------------------------------------------------
+INFO: [Project 1-454] Reading design checkpoint 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/design_1_PmodMTDS_0_0.dcp' for cell 'design_1_i/PmodMTDS_0'
+INFO: [Project 1-454] Reading design checkpoint 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_dtw_8F_32bit_0_3/design_1_dtw_8F_32bit_0_3.dcp' for cell 'design_1_i/dtw_8F_32bit_0'
+INFO: [Project 1-454] Reading design checkpoint 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_processing_system7_0_0/design_1_processing_system7_0_0.dcp' for cell 'design_1_i/processing_system7_0'
+INFO: [Project 1-454] Reading design checkpoint 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_rst_ps7_0_50M_0/design_1_rst_ps7_0_50M_0.dcp' for cell 'design_1_i/rst_ps7_0_50M'
+INFO: [Project 1-454] Reading design checkpoint 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_0_0/design_1_axi_gpio_0_0.dcp' for cell 'design_1_i/axi_gpios/axi_gpio_0'
+INFO: [Project 1-454] Reading design checkpoint 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_1_0/design_1_axi_gpio_1_0.dcp' for cell 'design_1_i/axi_gpios/axi_gpio_1'
+INFO: [Project 1-454] Reading design checkpoint 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_2_0/design_1_axi_gpio_2_0.dcp' for cell 'design_1_i/axi_gpios/axi_gpio_2'
+INFO: [Project 1-454] Reading design checkpoint 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_xbar_0/design_1_xbar_0.dcp' for cell 'design_1_i/ps7_0_axi_periph/xbar'
+INFO: [Project 1-454] Reading design checkpoint 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_auto_pc_0/design_1_auto_pc_0.dcp' for cell 'design_1_i/ps7_0_axi_periph/s00_couplers/auto_pc'
+INFO: [Netlist 29-17] Analyzing 166 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2019.1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-140] Inserted 8 IBUFs to IO ports without IO buffers.
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_processing_system7_0_0/design_1_processing_system7_0_0.xdc] for cell 'design_1_i/processing_system7_0/inst'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_processing_system7_0_0/design_1_processing_system7_0_0.xdc] for cell 'design_1_i/processing_system7_0/inst'
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_processing_system7_0_0/design_1_processing_system7_0_0.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/design_1_wrapper_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/design_1_wrapper_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/design_1_PmodMTDS_0_0_board.xdc] for cell 'design_1_i/PmodMTDS_0/inst'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/design_1_PmodMTDS_0_0_board.xdc] for cell 'design_1_i/PmodMTDS_0/inst'
+WARNING: [Designutils 20-1758] instance inst wraps a black box. Constraint reading is skipped for elaborated designs in this case. Skipping constraint file 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/PmodMTDS_pmod_bridge_0_0/PmodMTDS_pmod_bridge_0_0_board.xdc'.
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/PmodMTDS_axi_quad_spi_0_0/PmodMTDS_axi_quad_spi_0_0_board.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_quad_spi_0/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/PmodMTDS_axi_quad_spi_0_0/PmodMTDS_axi_quad_spi_0_0_board.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_quad_spi_0/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/PmodMTDS_axi_quad_spi_0_0/PmodMTDS_axi_quad_spi_0_0.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_quad_spi_0/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/PmodMTDS_axi_quad_spi_0_0/PmodMTDS_axi_quad_spi_0_0.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_quad_spi_0/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/PmodMTDS_axi_gpio_0_0/PmodMTDS_axi_gpio_0_0_board.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_gpio_0/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/PmodMTDS_axi_gpio_0_0/PmodMTDS_axi_gpio_0_0_board.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_gpio_0/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/PmodMTDS_axi_gpio_0_0/PmodMTDS_axi_gpio_0_0.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_gpio_0/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/PmodMTDS_axi_gpio_0_0/PmodMTDS_axi_gpio_0_0.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_gpio_0/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/axi_timer_0/axi_timer_0.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_timer_0/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/axi_timer_0/axi_timer_0.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_timer_0/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_rst_ps7_0_50M_0/design_1_rst_ps7_0_50M_0_board.xdc] for cell 'design_1_i/rst_ps7_0_50M/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_rst_ps7_0_50M_0/design_1_rst_ps7_0_50M_0_board.xdc] for cell 'design_1_i/rst_ps7_0_50M/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_rst_ps7_0_50M_0/design_1_rst_ps7_0_50M_0.xdc] for cell 'design_1_i/rst_ps7_0_50M/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_rst_ps7_0_50M_0/design_1_rst_ps7_0_50M_0.xdc] for cell 'design_1_i/rst_ps7_0_50M/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_0_0/design_1_axi_gpio_0_0_board.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_0/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_0_0/design_1_axi_gpio_0_0_board.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_0/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_0_0/design_1_axi_gpio_0_0.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_0/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_0_0/design_1_axi_gpio_0_0.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_0/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_1_0/design_1_axi_gpio_1_0_board.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_1/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_1_0/design_1_axi_gpio_1_0_board.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_1/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_1_0/design_1_axi_gpio_1_0.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_1/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_1_0/design_1_axi_gpio_1_0.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_1/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_2_0/design_1_axi_gpio_2_0_board.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_2/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_2_0/design_1_axi_gpio_2_0_board.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_2/U0'
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_2_0/design_1_axi_gpio_2_0.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_2/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_axi_gpio_2_0/design_1_axi_gpio_2_0.xdc] for cell 'design_1_i/axi_gpios/axi_gpio_2/U0'
+Parsing XDC File [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/constrs_1/new/const1.xdc]
+Finished Parsing XDC File [C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/constrs_1/new/const1.xdc]
+Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/PmodMTDS_axi_quad_spi_0_0/PmodMTDS_axi_quad_spi_0_0_clocks.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_quad_spi_0/U0'
+Finished Parsing XDC File [c:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.srcs/sources_1/bd/design_1/ip/design_1_PmodMTDS_0_0/src/PmodMTDS_axi_quad_spi_0_0/PmodMTDS_axi_quad_spi_0_0_clocks.xdc] for cell 'design_1_i/PmodMTDS_0/inst/axi_quad_spi_0/U0'
+Completed Processing XDC Constraints
+
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.009 . Memory (MB): peak = 1923.359 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 8 instances were transformed.
+  IOBUF => IOBUF (IBUF, OBUFT): 8 instances
+
+RTL Elaboration Complete:  : Time (s): cpu = 00:00:41 ; elapsed = 00:00:28 . Memory (MB): peak = 2002.250 ; gain = 438.574
+63 Infos, 106 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:56 ; elapsed = 00:00:44 . Memory (MB): peak = 2002.250 ; gain = 596.445
+file copy -force C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.runs/impl_1/design_1_wrapper.sysdef C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.sdk/design_1_wrapper.hdf
+
+launch_sdk -workspace C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.sdk -hwspec C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.sdk/design_1_wrapper.hdf
+INFO: [Vivado 12-393] Launching SDK...
+INFO: [Vivado 12-417] Running xsdk -workspace C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.sdk -hwspec C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/OSV_DTW_8F.sdk/design_1_wrapper.hdf
+INFO: [Vivado 12-3157] SDK launch initiated. Please check console for any further messages.
+close_design
+archive_project C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F_archive.xpr.zip -temp_dir C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO -force -include_local_ip_cache
+INFO: [Coretcl 2-137] starting archive...
+INFO: [Coretcl 2-1499] Saving project copy to temporary location 'C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO' for archiving project
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/REV/VivadoProjects/vivado-library-master'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/REV/VivadoProjects/ZYNQ_DTW/ip_repo'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2019.1/data/ip'.
+INFO: [Coretcl 2-1211] Creating project copy for archival...
+INFO: [ProjectBase 1-495] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience any problem with archiving the project, please consider setting environment variable $TEMP to a shorter path.
+Current project path is 'C:/Users/REV/VivadoProjects/ZYNQ_DTW/OSV_DTW_8F/.Xil/Vivado-4684-DESKTOP-DT3LPHO/PrjAr/_X_'.
+INFO: [Coretcl 2-1213] Including run results for 'synth_1'
+INFO: [Coretcl 2-1213] Including run results for 'design_1_PmodMTDS_0_0_synth_1'
+INFO: [Coretcl 2-1213] Including run results for 'design_1_axi_gpio_0_0_synth_1'
+INFO: [Coretcl 2-1213] Including run results for 'design_1_axi_gpio_1_0_synth_1'
+INFO: [Coretcl 2-1213] Including run results for 'design_1_axi_gpio_2_0_synth_1'
+INFO: [Coretcl 2-1213] Including run results for 'design_1_xbar_0_synth_1'
+INFO: [Coretcl 2-1213] Including run results for 'design_1_dtw_8F_32bit_0_3_synth_1'
+INFO: [Coretcl 2-1213] Including run results for 'design_1_auto_pc_0_synth_1'
+INFO: [Coretcl 2-1213] Including run results for 'impl_1'
+INFO: [Coretcl 2-133] re-setting run 'design_1_PmodMTDS_0_0_impl_1'...
+INFO: [Coretcl 2-133] re-setting run 'design_1_axi_gpio_0_0_impl_1'...
+INFO: [Coretcl 2-133] re-setting run 'design_1_axi_gpio_1_0_impl_1'...
+INFO: [Coretcl 2-133] re-setting run 'design_1_axi_gpio_2_0_impl_1'...
+INFO: [Coretcl 2-133] re-setting run 'design_1_xbar_0_impl_1'...
+INFO: [Coretcl 2-133] re-setting run 'design_1_dtw_8F_32bit_0_3_impl_1'...
+INFO: [Coretcl 2-133] re-setting run 'design_1_auto_pc_0_impl_1'...
+INFO: [Coretcl 2-1212] Importing remotely added design sources and verilog include files (if any)...
+INFO: [filemgmt 20-334] All file(s) are already imported in fileset: 'design_1_PmodMTDS_0_0'
+INFO: [filemgmt 20-348] Importing the appropriate files for fileset: 'design_1_PmodMTDS_0_0'
+INFO: [filemgmt 20-334] All file(s) are already imported in fileset: 'design_1_auto_pc_0'
+INFO: [filemgmt 20-348] Importing the appropriate files for fileset: 'design_1_auto_pc_0'
+INFO: [filemgmt 20-334] All file(s) are already imported in fileset: 'design_1_axi_gpio_0_0'
+INFO: [filemgmt 20-348] Importing the appropriate files for fileset: 'design_1_axi_gpio_0_0'
+INFO: [filemgmt 20-334] All file(s) are already imported in fileset: 'design_1_axi_gpio_1_0'
+INFO: [filemgmt 20-348] Importing the appropriate files for fileset: 'design_1_axi_gpio_1_0'
+INFO: [filemgmt 20-334] All file(s) are already imported in fileset: 'design_1_axi_gpio_2_0'
+INFO: [filemgmt 20-348] Importing the appropriate files for fileset: 'design_1_axi_gpio_2_0'
+INFO: [filemgmt 20-334] All file(s) are already imported in fileset: 'design_1_dtw_8F_32bit_0_3'
+INFO: [filemgmt 20-348] Importing the appropriate files for fileset: 'design_1_dtw_8F_32bit_0_3'
+INFO: [filemgmt 20-334] All file(s) are already imported in fileset: 'design_1_xbar_0'
+INFO: [filemgmt 20-348] Importing the appropriate files for fileset: 'design_1_xbar_0'
+INFO: [filemgmt 20-334] All file(s) are already imported in fileset: 'constrs_1'
+INFO: [filemgmt 20-348] Importing the appropriate files for fileset: 'constrs_1'
+INFO: [filemgmt 20-334] All file(s) are already imported in fileset: 'sources_1'
+INFO: [filemgmt 20-348] Importing the appropriate files for fileset: 'sources_1'

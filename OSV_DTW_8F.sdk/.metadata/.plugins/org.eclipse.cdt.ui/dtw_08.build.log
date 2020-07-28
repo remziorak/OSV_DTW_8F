@@ -1,0 +1,31 @@
+23:00:19 **** Build of configuration Debug for project dtw_08 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_08.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_08.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_08.d" -MT"src/dtw_08.o" -o "src/dtw_08.o" "../src/dtw_08.cc"
+../src/dtw_08.cc:94:12: warning: 'led_data' defined but not used [-Wunused-variable]
+ static int led_data;
+            ^~~~~~~~
+'Finished building: ../src/dtw_08.cc'
+' '
+'Building file: ../src/main.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/main.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cc"
+'Finished building: ../src/main.cc'
+' '
+'Building target: dtw_08.elf'
+'Invoking: ARM v7 g++ linker'
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../standalone_bsp_0/ps7_cortexa9_0/lib -o "dtw_08.elf"  ./src/dtw_08.o ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group
+'Finished building target: dtw_08.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size dtw_08.elf  |tee "dtw_08.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  86680	   3465	  24880	 115025	  1c151	dtw_08.elf
+'Finished building: dtw_08.elf.size'
+' '
+
+23:00:21 Build Finished (took 2s.207ms)
+

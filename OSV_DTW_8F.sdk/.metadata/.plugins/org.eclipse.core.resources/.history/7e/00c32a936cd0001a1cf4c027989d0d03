@@ -1,0 +1,935 @@
+#include <stdio.h>
+#include "xparameters.h"
+#include "xgpio.h"
+#include "xil_io.h"
+#include "sleep.h"
+#include "xil_printf.h"
+#include "xscugic.h"
+#include <cstdlib>
+#include <mtds.h>
+#include <stdint.h>
+#include <string.h>
+#include "sleep.h"
+#include <MyDisp.h>
+#include <math.h>
+
+#define maxSample 256
+#define numOfUsers  4
+
+// Threshold value for decision function
+#define DTW_8F_threshold 800
+
+/*
+ * To collect signature features and DTW scores
+ * for training and finding threshold values
+ * uncomment print_coord definition
+*/
+//#define print_coords
+
+struct signature_features {
+	s32 x[maxSample - 1];  	// x coords
+	s32 y[maxSample - 1];	// y coords
+	s32 Vx[maxSample - 1];	// Velocity on x axis
+	s32 Vy[maxSample - 1];	// Velocity on y axis
+	s32 Vm[maxSample - 1];	// Absolute velocity
+	s32 Ax[maxSample - 1];	// Acceleration on x axis
+	s32 Ay[maxSample - 1];	// Acceleration on y axis
+	s32 Am[maxSample - 1];	// Absolute acceleration
+	u32 tms[maxSample - 1];	// Timestamp
+};
+
+typedef struct signature_features sign_features;
+
+signature_features ** temp_sign_ptr;
+signature_features ** test_sign_ptr;
+
+// Pointer to indicate which signature is currently processed
+signature_features * current_sign_ptr;
+
+/* ------------------------------------------------------------ */
+/*                Global Variables    (MTDS)                    */
+/* ------------------------------------------------------------ */
+HDS hdsDisp;
+HDS hdsFng1;
+HBMP hbmpFng1;
+HDS hdsFng2;
+HBMP hbmpFng2;
+
+int16_t xcoPrv1;
+int16_t ycoPrv1;
+int16_t xcoPrv2;
+int16_t ycoPrv2;
+
+/********************* Definition for DTW module *******************/
+
+#define DTW_8F_BASEADDR XPAR_DTW_8F_32BIT_0_BASEADDR
+#define DTW_8F_HIGHADDR XPAR_DTW_8F_32BIT_0_HIGHADDR
+
+#define REG0_OFFSET 0
+#define REG1_OFFSET 4
+#define REG2_OFFSET 8
+#define REG3_OFFSET 12
+#define REG4_OFFSET 16
+#define REG5_OFFSET 20
+
+/*******************************************************************/
+
+/*********************** Parameter Definitons **********************/
+
+#define BTNS_DEVICE_ID	XPAR_GPIO_0_DEVICE_ID
+#define SW_DEVICE_ID	XPAR_GPIO_1_DEVICE_ID
+#define LEDS_DEVICE_ID	XPAR_GPIO_2_DEVICE_ID
+
+/* Definitions for peripheral PS7_SCUGIC_0 */
+#define INTC_DEVICE_ID	XPAR_PS7_SCUGIC_0_DEVICE_ID
+
+/* Definitions for Fabric interrupts connected to ps7_scugic_0 */
+#define INTC_GPIO_INTERRUPT_ID XPAR_FABRIC_AXI_GPIOS_AXI_GPIO_0_IP2INTC_IRPT_INTR
+
+#define BTN_INT_CH	XGPIO_IR_CH1_MASK
+
+XGpio LEDInst, BTNInst, SWInst;
+XScuGic INTCInst;
+//static int led_data;
+static int btn_value;
+static int sw_value;
+static int user_ID;
+
+/*******************************************************************/
+
+enum sys_state_machine {
+	IDLE, TEMP_SIGN, TEST_SIGN, COMPUTE_DTW
+};
+
+enum button_pressed {
+	BTN1 = 1, BTN2, BTN3, BTN4
+};
+
+button_pressed btn_prs;
+static int btn_debounce_cntr = 0;
+
+// Initial system state is IDLE
+sys_state_machine current_state = IDLE;
+sys_state_machine next_state;
+
+//----------------------------------------------------
+// PROTOTYPE FUNCTIONS
+//----------------------------------------------------
+void get_input_from_mtds();
+void check_userID();
+void define_current_state();
+void check_btn_prs();
+static void BTN_Intr_Handler(void *baseaddr_p);
+static int InterruptSystemSetup(XScuGic *XScuGicInstancePtr);
+static int IntcInitFunction(u16 DeviceId, XGpio *GpioInstancePtr);
+
+void print_decision_to_MTDS(u32, u32);
+void print_sign_coords();
+void fill_rectangle_texts();
+void draw_bottom_rectangle();
+
+void setup() {
+
+	int status;
+
+	//----------------------------------------------------
+	// INITIALIZE THE PERIPHERALS & SET DIRECTIONS OF GPIO
+	//----------------------------------------------------
+
+	// Initialise LEDs
+	status = XGpio_Initialize(&LEDInst, LEDS_DEVICE_ID);
+	if (status != XST_SUCCESS) {
+		xil_printf("LED Initialization Failed\r\n");
+	}
+
+	// Initialise Push Buttons
+	status = XGpio_Initialize(&BTNInst, BTNS_DEVICE_ID);
+	if (status != XST_SUCCESS) {
+		xil_printf("Push Buttons Initialization Failed\r\n");
+	}
+
+	// Initialise SW
+	status = XGpio_Initialize(&SWInst, SW_DEVICE_ID);
+	if (status != XST_SUCCESS) {
+		xil_printf("SW Initialization Failed\r\n");
+	}
+
+	// Set LEDs direction to outputs
+	XGpio_SetDataDirection(&LEDInst, 1, 0x00);
+	// Set all buttons direction to inputs
+	XGpio_SetDataDirection(&BTNInst, 1, 0xFF);
+	// Set all SW direction to inputs
+	XGpio_SetDataDirection(&SWInst, 1, 0xFF);
+
+	// Initialize interrupt controller
+	status = IntcInitFunction(INTC_DEVICE_ID, &BTNInst);
+	if (status != XST_SUCCESS) {
+		xil_printf("Interrupt Initialization Failed\r\n");
+	}
+
+	/************************* MTDS Settings ************************/
+
+	bool fStat;
+
+	/* It is possible that we are trying to initialize the interface to the
+	 ** display board before it has finished its power on initialization. If so,
+	 ** then the first call to mtds.begin() will fail. We run in a loop trying
+	 ** to initialize until it succeeds. This usually doesn't take more than one
+	 ** or two iterations of the loop before it succeeds.
+	 */
+	while (true) {
+		fStat = mtds.begin(pinMtdsSelStd, frqMtdsSpiDefault);
+		if (fStat) {
+			xil_printf("mtds.begin() succeeded\n\r");
+			break;
+		} else {
+			xil_printf("mtds.begin() failed\n\r");
+			sleep(1);
+		}
+	}
+
+	/* The following initializes the library and the communications interface to
+	 ** the display board. It is quite possible that the display board hasn't
+	 ** completed its power on or reset initialization at this point and the
+	 ** begin() function will fail. Because of this it's a good idea to run the
+	 ** begin() function in a loop in case it fails the first time. Keep looping
+	 ** until it succeeds.
+	 */
+	while (true) {
+		fStat = mydisp.begin();
+		if (fStat) {
+			xil_printf("mydisp.begin() succeeded\n\r");
+			break;
+		} else {
+			xil_printf("mydisp.begin() failed\n\r");
+			sleep(1);
+		}
+	}
+
+	/* In this example, unlike the earlier ones, we are getting the DS for the
+	 ** display and saving it in a global variable. We hold onto it for the entire
+	 ** life of the program.  The previous demo programs each had a number of
+	 ** functions that were called to demonstrate particular aspects of the MTDS
+	 ** system. Each of those functions was a self-contained unit that obtained
+	 ** resources at the beginning of the function and then released them at the
+	 ** end. In this case, this program demonstrates a single thing. So it is
+	 ** reasonable to obtain the necessary resources here in setup() and hold onto
+	 ** them for the entire life of the program.
+	 */
+	hdsDisp = mtds.GetDisplayDs();
+
+	/* The code in loop() is going to make use of a couple of off-screen bitmaps.
+	 ** Here we are setting them up and drawing the figures into them that we will
+	 ** use later in loop().
+	 */
+	/* Obtain a DS and create a bitmap for the image used to display finger 1
+	 ** touches. Like the display DS, this DS and bitmap are maintained and used
+	 ** for the entire life of the program.
+	 */
+	hdsFng1 = mtds.GetDs();
+	hbmpFng1 = mtds.CreateBitmap(40, 40, 16);
+	mtds.SetDrawingSurface(hdsFng1, hbmpFng1);
+
+	mtds.SetDrwRop(hdsFng1, drwCopyPen);
+	mtds.SetPen(hdsFng1, penSolid);
+
+	mtds.SetFgColor(hdsFng1, clrGreen);
+	mtds.MoveTo(hdsFng1, 0, 0);
+	mtds.LineTo(hdsFng1, 39, 39);
+	mtds.MoveTo(hdsFng1, 39, 0);
+	mtds.LineTo(hdsFng1, 0, 39);
+
+	mtds.SetFgColor(hdsFng1, clrRed);
+	mtds.MoveTo(hdsFng1, 0, 0);
+	mtds.LineTo(hdsFng1, 39, 0);
+	mtds.LineTo(hdsFng1, 39, 39);
+	mtds.LineTo(hdsFng1, 0, 39);
+	mtds.LineTo(hdsFng1, 0, 0);
+
+	//burada kaydedilen pixel sayýsý arttýrýldý
+	mtds.SetTchMoveDelta(3, 3);
+
+	/**************************************************************/
+
+	// allocate memory for pointer to pointer for template signature of users
+	temp_sign_ptr = (signature_features **) malloc(numOfUsers * sizeof(*temp_sign_ptr));
+
+	// allocate memory for template signature of users
+	for (size_t i = 0; i < numOfUsers; i++) {
+		temp_sign_ptr[i] = (signature_features *) malloc(sizeof(*temp_sign_ptr));
+	}
+
+	// allocate memory for pointer to pointer for test signature of users
+	test_sign_ptr = (signature_features **) malloc(numOfUsers * sizeof(*test_sign_ptr));
+
+	// allocate memory for test signature of users
+	for (size_t i = 0; i < numOfUsers; i++) {
+		test_sign_ptr[i] = (signature_features *) malloc(sizeof(*test_sign_ptr));
+	}
+
+	// Pointer to indicate which signature is currently processed
+	current_sign_ptr = (signature_features *) malloc(sizeof(*current_sign_ptr));
+
+}
+
+void loop() {
+
+	switch (current_state) {
+	case IDLE:
+		xil_printf("Current State : IDLE \n");
+		mydisp.clearDisplay(clrBlack);
+		while (current_state == IDLE) {
+			draw_bottom_rectangle();
+			fill_rectangle_texts();
+			mydisp.drawText((char*) "The system has 4 states :", 10, 15);
+			mydisp.drawText((char*) "IDLE => Initial state", 10, 35);
+			mydisp.drawText((char*) "TEMP_SIGN => Save template", 10, 55);
+			mydisp.drawText((char*) "signature for current user", 10, 65);
+			mydisp.drawText((char*) "TEST_SIGN => Save test", 10, 85);
+			mydisp.drawText((char*) "signature for current user", 10, 95);
+			mydisp.drawText((char*) "COMP_DTW => Compute distance", 10, 115);
+			mydisp.drawText((char*) "to verificate signature", 10, 125);
+			mydisp.drawText((char*) "Define next state by SW[1:0]", 10, 145);
+			mydisp.drawText((char*) "For transition press BTN1", 10, 155);
+			mydisp.drawText((char*) "Define user ID by SW[3:2]", 10, 175);
+			mydisp.drawText((char*) "Entire surface of the screen", 10, 195);
+			mydisp.drawText((char*) "can be used to sign.", 10, 205);
+
+		}
+
+		break;
+
+	case TEMP_SIGN:
+		xil_printf("Current State : TEMP_SIGN \n");
+		mydisp.clearDisplay(clrBlack);
+		draw_bottom_rectangle();
+		fill_rectangle_texts();
+		while (current_state == TEMP_SIGN) {
+
+			current_sign_ptr = temp_sign_ptr[user_ID];
+			xil_printf("Please sign the touchscreen for template signature. \n");
+			mydisp.drawText((char*) "Please sign the screen for", 10, 50);
+			mydisp.drawText((char*) "template signature.", 10, 60);
+			get_input_from_mtds();
+
+#if defined(print_coords)
+			xil_printf("Template Signature Datas :\n");
+			print_sign_coords();
+#endif
+
+			while (current_state == TEMP_SIGN) {
+				mydisp.drawText((char*) "DELETE signature => BTN3.", 10, 240);
+				//check_btn_prs();
+				if (btn_prs == BTN3) {
+					xil_printf("Current signature deleted\nPlease enter new signature.\n");
+					mydisp.clearDisplay(clrBlack);
+					draw_bottom_rectangle();
+					fill_rectangle_texts();
+					mydisp.drawText((char*) "Signature deleted.", 10, 50);
+					mydisp.drawText((char*) "Please sign the screen for", 10, 60);
+					mydisp.drawText((char*) "template signature.", 10, 70);
+
+					get_input_from_mtds();
+#if defined(print_coords)
+					xil_printf("Template Signature Datas :\n");
+					print_sign_coords();
+#endif
+				}
+			}
+		}
+		break;
+
+	case TEST_SIGN:
+		xil_printf("Current State : TEST_SIGN \n");
+		mydisp.clearDisplay(clrBlack);
+		draw_bottom_rectangle();
+		fill_rectangle_texts();
+		while (current_state == TEST_SIGN) {
+			xil_printf("I am processing in TEST_SIGN state : main loop\n");
+			current_sign_ptr = test_sign_ptr[user_ID];
+			xil_printf("Please sign the touchscreen for test signature. \n");
+			mydisp.drawText((char*) "Please sign the screen for", 10, 50);
+			mydisp.drawText((char*) "test signature.", 10, 60);
+			get_input_from_mtds();
+
+#if defined(print_coords)
+			xil_printf("Test Signature Datas :\n");
+			print_sign_coords();
+#endif
+
+			while (current_state == TEST_SIGN) {
+				mydisp.drawText((char*) "DELETE signature => BTN3.", 10, 240);
+				//check_btn_prs();
+				if (btn_prs == BTN3) {
+					xil_printf("Current signature deleted\nPlease enter new signature.\n");
+					mydisp.clearDisplay(clrBlack);
+					draw_bottom_rectangle();
+					fill_rectangle_texts();
+					mydisp.drawText((char*) "Signature deleted.", 10, 50);
+					mydisp.drawText((char*) "Please sign the screen for", 10, 60);
+					mydisp.drawText((char*) "test signature.", 10, 70);
+
+					get_input_from_mtds();
+
+#if defined(print_coords)
+					xil_printf("Test Signature Datas :\n");
+					print_sign_coords();
+#endif
+
+				}
+
+			}
+		}
+		break;
+	case COMPUTE_DTW:
+		xil_printf("Current State : COMPUTE_DTW \n");
+		mydisp.clearDisplay(clrBlack);
+
+
+		while (current_state == COMPUTE_DTW) {
+			draw_bottom_rectangle();
+			fill_rectangle_texts();
+
+			// Write state register to initial 0 value
+			Xil_Out32((DTW_8F_BASEADDR + REG2_OFFSET), 0x0);
+			//write reset signal to reg3[1]
+			Xil_Out32((DTW_8F_BASEADDR + REG3_OFFSET), 0x3);
+			// clear reset, set enable
+			Xil_Out32((DTW_8F_BASEADDR + REG3_OFFSET), 0x1);
+
+			/* --------------------------Fill template data--------------------------- */
+
+			current_sign_ptr = temp_sign_ptr[user_ID];
+
+			// set system status for filling template memory
+			Xil_Out32((DTW_8F_BASEADDR + REG2_OFFSET), 0x1);
+
+			for (size_t i = 0; i < maxSample; i++) {
+
+				// [Ax Vm Vx x Ay Am Vy y] Concat
+				u32 template_data = 0;
+
+				// [ 0 0 0 0 0 0 0  y ]
+				//xil_printf("Step 1 : %08x\n", ((u8) (current_sign_ptr->y[i] >> 1) >> 4));
+				template_data |= ((s8) (current_sign_ptr->y[i] >> 1) >> 4);
+				//xil_printf("Step 1 : %08x\n", template_data);
+
+				// [ 0 0 0 0 0 0 Vy y ]
+				//xil_printf("Step 2 : %08x\n", (((u32) (current_sign_ptr->Vy[i]) >> 28)) << 4);
+				template_data |= (((u32) (current_sign_ptr->Vy[i]) >> 28)) << 4;
+				//xil_printf("Step 2 : %08x\n", template_data);
+
+				// [ 0 0 0 0 0 Am Vy y ]
+				/*
+				 xil_printf("Step 3 : %08x\n", (((u32) (current_sign_ptr->Am[i]) >> 28)) << 8);
+				 template_data |= (((u32) (current_sign_ptr->Am[i]) >> 28)) << 8;
+				 xil_printf("Step 3 : %08x\n", template_data);
+				 */
+
+				//To solve the loss of the resolution  below masking used
+				//instead of uppper commented mask operation
+				//xil_printf("Step 3 : %08x\n", (((u32) (current_sign_ptr->Am[i]) >> 24)) << 8);
+				template_data |= (((u32) (current_sign_ptr->Am[i]) >> 24)) << 8;
+				//xil_printf("Step 3 : %08x\n", template_data);
+
+				// [ 0 0 0 0 Ay Am Vy y ]
+				//xil_printf("Step 4 : %08x\n", (((u32) (current_sign_ptr->Ay[i]) >> 28)) << 12);
+				template_data |= (((u32) (current_sign_ptr->Ay[i]) >> 28)) << 12;
+				//xil_printf("Step 4 : %08x\n", template_data);
+
+				// [ 0 0 0 x Ay Am Vy y ]
+				//xil_printf("Step 5 : %08x\n", ((u32) (current_sign_ptr->x[i] >> 1) >> 4) << 16);
+				template_data |= ((u32) (current_sign_ptr->x[i] >> 1) >> 4) << 16;
+				//xil_printf("Step 5 : %08x\n", template_data);
+
+				// [ 0 0 Vx x Ay Am Vy y ]
+				//xil_printf("Step 6 : %08x\n", (((u32) (current_sign_ptr->Vx[i]) >> 28)) << 20);
+				template_data |= (((u32) (current_sign_ptr->Vx[i]) >> 28)) << 20;
+				//xil_printf("Step 6 : %08x\n", template_data);
+
+				// [ 0 Vm Vx x Ay Am Vy y ]
+				/*
+				 xil_printf("Step 7 : %08x\n", (((u32) (current_sign_ptr->Vm[i]) >> 28)) << 24);
+				 template_data |= (((u32) (current_sign_ptr->Vm[i]) >> 28)) << 24;
+				 xil_printf("Step 7 : %08x\n", template_data);
+				 */
+
+				//To solve the loss of the resolution  below masking used
+				//instead of uppper commented mask operation
+				//xil_printf("Step 7 : %08x\n", (((u32) (current_sign_ptr->Vm[i]) >> 24)) << 24);
+				template_data |= (((u32) (current_sign_ptr->Vm[i]) >> 24)) << 24;
+				//xil_printf("Step 7 : %08x\n", template_data);
+
+				// [ Ax Vm Vx x Ay Am Vy y ]
+				//xil_printf("Step 8 : %08x\n", (((u32) (current_sign_ptr->Ax[i]) >> 28)) << 28);
+				template_data |= (((u32) (current_sign_ptr->Ax[i]) >> 28)) << 28;
+				//xil_printf("Step 8 : %08x\n", template_data);
+
+				// data address reg[1]
+				Xil_Out32((DTW_8F_BASEADDR + REG1_OFFSET), i);
+
+				//input data reg[0]
+				Xil_Out32((DTW_8F_BASEADDR + REG0_OFFSET), template_data);
+			}
+
+			/* --------------------------Fill test data--------------------------- */
+
+			current_sign_ptr = test_sign_ptr[user_ID];
+
+			// set system status for filling test memory
+			Xil_Out32((DTW_8F_BASEADDR + REG2_OFFSET), 0x2);
+
+			for (size_t i = 0; i < maxSample; i++) {
+
+				// [Ax Vm Vx x Ay Am Vy y] Concat
+				u32 test_data = 0;
+
+				// [ 0 0 0 0 0 0 0  y ]
+				//xil_printf("Step 1 : %08x\n", ((u8) (current_sign_ptr->y[i] >> 1) >> 4));
+				test_data |= ((s8) (current_sign_ptr->y[i] >> 1) >> 4);
+				//xil_printf("Step 1 : %08x\n", test_data);
+
+				// [ 0 0 0 0 0 0 Vy y ]
+				//xil_printf("Step 2 : %08x\n", (((u32) (current_sign_ptr->Vy[i]) >> 28)) << 4);
+				test_data |= (((u32) (current_sign_ptr->Vy[i]) >> 28)) << 4;
+				//xil_printf("Step 2 : %08x\n", test_data);
+
+				// [ 0 0 0 0 0 Am Vy y ]
+
+				/*
+				 xil_printf("Step 3 : %08x\n", (((u32) (current_sign_ptr->Am[i]) >> 28)) << 8);
+				 test_data |= (((u32) (current_sign_ptr->Am[i]) >> 28)) << 8;
+				 xil_printf("Step 3 : %08x\n", test_data);
+				 */
+				//To solve the loss of the resolution  below masking used
+				//instead of uppper commented mask operation
+				//xil_printf("Step 3 : %08x\n", (((u32) (current_sign_ptr->Am[i]) >> 24)) << 8);
+				test_data |= (((u32) (current_sign_ptr->Am[i]) >> 24)) << 8;
+				//xil_printf("Step 3 : %08x\n", test_data);
+
+				// [ 0 0 0 0 Ay Am Vy y ]
+				//xil_printf("Step 4 : %08x\n", (((u32) (current_sign_ptr->Ay[i]) >> 28)) << 12);
+				test_data |= (((u32) (current_sign_ptr->Ay[i]) >> 28)) << 12;
+				//xil_printf("Step 4 : %08x\n", test_data);
+
+				// [ 0 0 0 x Ay Am Vy y ]
+				//xil_printf("Step 5 : %08x\n", ((u32) (current_sign_ptr->x[i] >> 1) >> 4) << 16);
+				test_data |= ((u32) (current_sign_ptr->x[i] >> 1) >> 4) << 16;
+				//xil_printf("Step 5 : %08x\n", test_data);
+
+				// [ 0 0 Vx x Ay Am Vy y ]
+				//xil_printf("Step 6 : %08x\n", (((u32) (current_sign_ptr->Vx[i]) >> 28)) << 20);
+				test_data |= (((u32) (current_sign_ptr->Vx[i]) >> 28)) << 20;
+				//xil_printf("Step 6 : %08x\n", test_data);
+
+				// [ 0 Vm Vx x Ay Am Vy y ]
+				/*
+				 xil_printf("Step 7 : %08x\n", (((u32) (current_sign_ptr->Vm[i]) >> 28)) << 24);
+				 test_data |= (((u32) (current_sign_ptr->Vm[i]) >> 28)) << 24;
+				 xil_printf("Step 7 : %08x\n", test_data);
+				 */
+
+				//To solve the loss of the resolution  below masking used
+				//instead of uppper commented mask operation
+				//xil_printf("Step 7 : %08x\n", (((u32) (current_sign_ptr->Vm[i]) >> 24)) << 24);
+				test_data |= (((u32) (current_sign_ptr->Vm[i]) >> 24)) << 24;
+				//xil_printf("Step 7 : %08x\n", test_data);
+
+				// [ Ax Vm Vx x Ay Am Vy y ]
+				//xil_printf("Step 8 : %08x\n", (((u32) (current_sign_ptr->Ax[i]) >> 28)) << 28);
+				test_data |= (((u32) (current_sign_ptr->Ax[i]) >> 28)) << 28;
+				//xil_printf("Step 8 : %08x\n", test_data);
+
+				// data address reg[1]
+				Xil_Out32((DTW_8F_BASEADDR + REG1_OFFSET), i);
+
+				//input data reg[0]
+				Xil_Out32((DTW_8F_BASEADDR + REG0_OFFSET), test_data);
+			}
+
+			/* --------------------------Enable DTW Calculation--------------------------- */
+			Xil_Out32((DTW_8F_BASEADDR + REG2_OFFSET), 0x3);
+
+			u32 dtw_score;
+			u32 finish_sign;
+
+			do {
+				//check finish sign reg[5]
+				finish_sign = Xil_In32((DTW_8F_BASEADDR + REG5_OFFSET));
+			} while (finish_sign != 9);
+
+			//read DTW score from reg[4]
+			dtw_score = Xil_In32((DTW_8F_BASEADDR + REG4_OFFSET));
+
+			xil_printf("DTW_8F score  : %d \n", dtw_score);
+			xil_printf("********************************************************\n");
+
+			print_decision_to_MTDS(dtw_score, DTW_8F_threshold);
+
+			while (current_state == COMPUTE_DTW) {
+				mydisp.drawText((char*) "System computed the distance.", 9, 70);
+
+			}
+
+		}
+		break;
+	}
+
+}
+
+void get_input_from_mtds() {
+	/*
+	 This function removes all messages from the message queue.
+	 Note that since touch activity is asynchronous it is possible for touch messages
+	 to have been placed into the queue after the queue has been cleared but before
+	 this function has returned. This function does not guarantee that the queue is empty,
+	 but it will contain no messages from prior to the time that the function was called.
+	 */
+	mtds.ClearMsgQueue();
+	MTCH mtch;
+
+	unsigned int i = 0; //counter
+
+	// Take inputs from mtds until user press BTN2
+	while (btn_prs != BTN2) {
+
+		// User cannot use a signature longer than maxSample
+		// The last sample of long signatures are will not be a save
+		if (i >= maxSample) {
+			// If user sign longer than max sample
+			// program cannot exit the loop.
+			check_btn_prs();
+			continue;
+		}
+
+		/* Check to see if there is a message in the message queue. */
+		if (mtds.GetMsgStatus() != 0) {
+			/* There is a message in the message queue. Read it into the local MTCH
+			 ** structure so that we can process it.
+			 ** Note: We are assuming that the only messages in the message queue will
+			 ** be touch messages. Assuming that to be true, we can read the message
+			 ** directly into an MTCH structure. If there were other types of messages
+			 ** in the queue, it would be better to read the message into a generic
+			 ** MEVT structure. Then we could look at the message id, see what kind of
+			 ** message it is, and then cast the pointer to a more appropriate message
+			 ** structure type.
+			 */
+			mtds.GetMsg((MEVT*) &mtch);
+
+			/* We have gotten a touch message from the message queue. The response
+			 ** that we perform will depend on the specific message. The first thing
+			 ** that we do is check that it is actually a touch message and ignore any
+			 ** messages outside the range of touch messages. We then switch based on
+			 ** the message id of the message. The message id tells us what specific
+			 ** kind of touch activity the message is reporting.
+			 **
+			 ** The tms member gives a time stamp for when the message was posted to
+			 ** the system message queue.
+			 **
+			 ** The hwin member tells the window handle of the topmost window
+			 ** containing the coordinate where the touch event occurred. If the
+			 ** windowing system is not in use, this can be ignored.
+			 **
+			 ** The msg member identifies the specific kind of touch activity being
+			 ** reported.
+			 **
+			 ** The xco, yco members give the position of the touch event. For a finger
+			 ** down message, it gives the pixel position of where the finger came
+			 ** down. For a finger move message, it gives the current finger position.
+			 ** For a finger up message, it gives the last know position of the finger.
+			 **
+			 ** The wgt member gives an indication of the total area covered by the
+			 ** touch.
+			 **
+			 ** The spd member gives an indication of finger velocity for finger move
+			 ** messages. The wgt and spd members are generally ignored.
+			 */
+
+			current_sign_ptr->x[i] = (s32) mtch.xco;
+			current_sign_ptr->y[i] = (s32) mtch.yco;
+			current_sign_ptr->tms[i] = mtch.tms;
+
+			// To clean the background of the screen for new signature.
+			if (i == 0) {
+				mydisp.clearDisplay(clrBlack);
+				draw_bottom_rectangle();
+				fill_rectangle_texts();
+				mydisp.drawText((char*) "SAVE signature => BTN2.", 10, 240);
+			}
+
+			/********************** Draw touched Coord on MTDS **********************/
+			/*
+			 * x[i] and y[i] are center of the touched point
+			 */
+
+			mydisp.setForeground(clrMedBlueGray);
+			mydisp.drawEllipse(true, current_sign_ptr->x[i] - 2, current_sign_ptr->y[i] - 2,
+					current_sign_ptr->x[i] + 2, current_sign_ptr->y[i] + 2);
+
+			/************************************************************************/
+
+			i++; // increment sample counter
+
+		}
+
+	}
+
+	/**********************  Feature Extraction and Filling Memory  **********************/
+
+	for (unsigned int j = 0; j < i; j++) {
+
+		if (j == 0) {
+			current_sign_ptr->Vx[j] = 0;
+			current_sign_ptr->Vy[j] = 0;
+			current_sign_ptr->Vm[j] = 0;
+			current_sign_ptr->Ax[j] = 0;
+			current_sign_ptr->Ay[j] = 0;
+			current_sign_ptr->Am[j] = 0;
+
+		} else {
+			current_sign_ptr->Vx[j] = ((current_sign_ptr->x[j] - current_sign_ptr->x[j - 1]) << 29)
+					/ (s32) ((current_sign_ptr->tms[j] - current_sign_ptr->tms[j - 1]));
+
+			current_sign_ptr->Vy[j] = ((current_sign_ptr->y[j] - current_sign_ptr->y[j - 1]) << 29)
+					/ (s32) ((current_sign_ptr->tms[j] - current_sign_ptr->tms[j - 1]));
+
+			current_sign_ptr->Vm[j] = (s32) sqrt(
+					pow((s64) current_sign_ptr->Vx[j], 2) + pow((s64) current_sign_ptr->Vy[j], 2));
+
+			current_sign_ptr->Ax[j] = (current_sign_ptr->Vx[j] - current_sign_ptr->Vx[j - 1])
+					/ (s32) ((current_sign_ptr->tms[j] - current_sign_ptr->tms[j - 1]));
+
+			current_sign_ptr->Ay[j] = (current_sign_ptr->Vy[j] - current_sign_ptr->Vy[j - 1])
+					/ (s32) ((current_sign_ptr->tms[j] - current_sign_ptr->tms[j - 1]));
+
+			current_sign_ptr->Am[j] = (s32) sqrt(
+					pow((s64) current_sign_ptr->Ax[j], 2) + pow((s64) current_sign_ptr->Ay[j], 2));
+		}
+
+	}
+	/*************************************************************************************/
+
+	// Check sample counter if it is lower than maxSample
+	if (i < maxSample) {
+		// Replicate the previous samples
+		for (size_t j = i; j < maxSample; j++) {
+			current_sign_ptr->tms[j] = 0;
+			current_sign_ptr->x[j] = current_sign_ptr->x[j - i];
+			current_sign_ptr->y[j] = current_sign_ptr->y[j - i];
+			current_sign_ptr->Vx[j] = current_sign_ptr->Vx[j - i];
+			current_sign_ptr->Vy[j] = current_sign_ptr->Vy[j - i];
+			current_sign_ptr->Vm[j] = current_sign_ptr->Vm[j - i];
+			current_sign_ptr->Ax[j] = current_sign_ptr->Ax[j - i];
+			current_sign_ptr->Ay[j] = current_sign_ptr->Ay[j - i];
+			current_sign_ptr->Am[j] = current_sign_ptr->Am[j - i];
+		}
+	}
+
+	xil_printf("Signature saved in database. \n");
+	mydisp.clearDisplay(clrBlack);
+	draw_bottom_rectangle();
+	fill_rectangle_texts();
+	mydisp.drawText((char*) "Signature saved in database", 10, 50);
+}
+
+void check_userID() {
+
+	//Read SW[3:0] value
+	sw_value = XGpio_DiscreteRead(&SWInst, 1);
+
+	//Use SW[3:2] value to define user ID.
+	user_ID = sw_value >> 2;
+
+}
+
+void define_current_state() {
+
+	check_userID();
+
+	//Use SW[1:0] value to define current state of the system.
+	u8 state_sw_value = sw_value & 0x3;
+
+	switch (state_sw_value) {
+	case 0:
+		current_state = IDLE;
+		break;
+	case 1:
+		current_state = TEMP_SIGN;
+		break;
+	case 2:
+		current_state = TEST_SIGN;
+		break;
+	case 3:
+		current_state = COMPUTE_DTW;
+		break;
+	default:
+		xil_printf("Invalid state.");
+		current_state = IDLE;
+		break;
+	}
+}
+
+void check_btn_prs() {
+
+	btn_value = XGpio_DiscreteRead(&BTNInst, 1);
+
+	// Check which button is pressed
+	if ((btn_value & 0x1)) {
+		btn_prs = BTN1;
+		//xil_printf("BTN1 pressed\n");
+		define_current_state();
+	} else if (((btn_value & 0x2) == 2)) {
+		btn_prs = BTN2;
+		//xil_printf("BTN2 pressed\n");
+	} else if (((btn_value & 0x4) == 4)) {
+		btn_prs = BTN3;
+		//xil_printf("BTN3 pressed\n");
+	} else if (((btn_value & 0x8) == 8)) {
+		btn_prs = BTN4;
+		xil_printf("BTN4 pressed\n");
+		xil_printf("///////////////////////////////////////////////////////\n");
+		xil_printf("///////////////////////////////////////////////////////\n");
+		xil_printf("///////////////////////////////////////////////////////\n");
+		xil_printf("///////////////////////////////////////////////////////\n");
+	}
+
+}
+
+//----------------------------------------------------
+// INTERRUPT HANDLER FUNCTIONS
+// - called by the timer, button interrupt, performs
+// - LED flashing
+//----------------------------------------------------
+
+void BTN_Intr_Handler(void *InstancePtr) {
+
+	btn_debounce_cntr += 1;
+
+	// Disable GPIO interrupts
+	XGpio_InterruptDisable(&BTNInst, BTN_INT_CH);
+
+	// Ignore additional button presses
+	if ((XGpio_InterruptGetStatus(&BTNInst) & BTN_INT_CH) != BTN_INT_CH) {
+		return;
+	}
+
+	if (btn_debounce_cntr == 1) {
+		check_btn_prs();
+
+	}
+
+	if (btn_debounce_cntr == 2) {
+		btn_debounce_cntr = 0;
+	}
+
+	(void) XGpio_InterruptClear(&BTNInst, BTN_INT_CH);
+	// Enable GPIO interrupts
+	XGpio_InterruptEnable(&BTNInst, BTN_INT_CH);
+
+}
+
+//----------------------------------------------------
+// INITIAL SETUP FUNCTIONS
+//----------------------------------------------------
+
+int InterruptSystemSetup(XScuGic *XScuGicInstancePtr) {
+	// Enable interrupt
+	XGpio_InterruptEnable(&BTNInst, BTN_INT_CH);
+	XGpio_InterruptGlobalEnable(&BTNInst);
+
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
+			(Xil_ExceptionHandler) XScuGic_InterruptHandler, XScuGicInstancePtr);
+	Xil_ExceptionEnable();
+
+	return XST_SUCCESS;
+
+}
+
+int IntcInitFunction(u16 DeviceId, XGpio *GpioInstancePtr) {
+	XScuGic_Config *IntcConfig;
+	int status;
+
+	// Interrupt controller initialisation
+	IntcConfig = XScuGic_LookupConfig(DeviceId);
+	status = XScuGic_CfgInitialize(&INTCInst, IntcConfig, IntcConfig->CpuBaseAddress);
+	if (status != XST_SUCCESS)
+		return XST_FAILURE;
+
+	// Call to interrupt setup
+	status = InterruptSystemSetup(&INTCInst);
+	if (status != XST_SUCCESS)
+		return XST_FAILURE;
+
+	// Connect GPIO interrupt to handler
+	status = XScuGic_Connect(&INTCInst,
+	INTC_GPIO_INTERRUPT_ID, (Xil_ExceptionHandler) BTN_Intr_Handler, (void *) GpioInstancePtr);
+	if (status != XST_SUCCESS)
+		return XST_FAILURE;
+
+	// Enable GPIO interrupts interrupt
+	XGpio_InterruptEnable(GpioInstancePtr, 1);
+	XGpio_InterruptGlobalEnable(GpioInstancePtr);
+
+	// Enable GPIO and timer interrupts in the controller
+	XScuGic_Enable(&INTCInst, INTC_GPIO_INTERRUPT_ID);
+
+	return XST_SUCCESS;
+}
+
+void print_decision_to_MTDS(u32 dtw_score, u32 threshold) {
+
+	if (dtw_score <= threshold) {
+		mydisp.setForeground(clrDkGreen);
+		mydisp.drawText((char*) "Verified", 140, 290);
+		mydisp.drawImage((char*) "BmpLib/led_48x48_g_on.bmp", 25, 120);
+		mydisp.drawImage((char*) "BmpLib/led_48x48_g_on.bmp", 95, 120);
+		mydisp.drawImage((char*) "BmpLib/led_48x48_g_on.bmp", 165, 120);
+		mydisp.setForeground(clrWhite);
+	} else {
+		mydisp.setForeground(clrDkRed);
+		mydisp.drawText((char*) "Denied", 140, 290);
+		mydisp.drawImage((char*) "BmpLib/led_48x48_r_on.bmp", 25, 120);
+		mydisp.drawImage((char*) "BmpLib/led_48x48_r_on.bmp", 95, 120);
+		mydisp.drawImage((char*) "BmpLib/led_48x48_r_on.bmp", 165, 120);
+		mydisp.setForeground(clrWhite);
+	}
+
+}
+
+void print_sign_coords() {
+
+	for (size_t i = 0; i < maxSample; i++) {
+		xil_printf("%u ", current_sign_ptr->tms[i]);
+		xil_printf("%d ", current_sign_ptr->x[i]);
+		xil_printf("%d ", current_sign_ptr->y[i]);
+		xil_printf("%d ", current_sign_ptr->Vx[i]);
+		xil_printf("%d ", current_sign_ptr->Vy[i]);
+		xil_printf("%d ", current_sign_ptr->Vm[i]);
+		xil_printf("%d ", current_sign_ptr->Ax[i]);
+		xil_printf("%d ", current_sign_ptr->Ay[i]);
+		xil_printf("%d \n", current_sign_ptr->Am[i]);
+	}
+}
+
+void fill_rectangle_texts() {
+	check_userID();
+	char states_str[4][10] = { "IDLE", "TEMP_SIGN", "TEST_SIGN", "COMP_DTW" };
+	mydisp.setPen(penSolid);
+	mydisp.setForeground(clrWhite);
+	mydisp.setBackground(clrBlack);
+	char userID_str[10];
+	itoa(user_ID, userID_str, 10);
+	mydisp.drawText((char*) "User Id       :", 14, 270);
+	mydisp.drawText((char*) userID_str, 140, 270);
+	mydisp.drawText((char*) "Current State :", 14, 280);
+	mydisp.drawText((char*) states_str[current_state], 140, 280);
+	mydisp.drawText((char*) "Verification  :", 14, 290);
+
+}
+
+void draw_bottom_rectangle() {
+	mydisp.setPen(penDash);
+	mydisp.setForeground(clrDkYellow);
+	mydisp.setBackground(clrRed);
+	mydisp.drawRectangle(false, 10, 260, 230, 310);
+}

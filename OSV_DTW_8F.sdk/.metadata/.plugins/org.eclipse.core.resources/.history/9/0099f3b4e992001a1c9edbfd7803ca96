@@ -1,0 +1,22 @@
+
+
+#include <stdio.h>
+#include "xil_printf.h"
+#include "xparameters.h"
+
+
+XGpio Gpio; /* The Instance of the GPIO Driver */
+
+
+void setup()
+{
+
+    print("Hello World\n\r");
+    print("Hello World\n\r");
+    print("Hello World\n\r");
+
+}
+
+void loop(){
+	print("Þu an loop içindeyiz :)");
+}

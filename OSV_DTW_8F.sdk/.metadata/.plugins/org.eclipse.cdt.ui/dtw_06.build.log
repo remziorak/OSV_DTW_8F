@@ -1,0 +1,109 @@
+23:00:23 **** Build of configuration Debug for project dtw_06 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_06.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_06.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_06.d" -MT"src/dtw_06.o" -o "src/dtw_06.o" "../src/dtw_06.cc"
+../src/dtw_06.cc: In function 'void loop()':
+../src/dtw_06.cc:283:55: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("The system has 4 states :", 10, 15);
+                                                       ^
+../src/dtw_06.cc:284:51: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("IDLE => Initial state", 10, 35);
+                                                   ^
+../src/dtw_06.cc:285:56: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("TEMP_SIGN => Save template", 10, 55);
+                                                        ^
+../src/dtw_06.cc:286:56: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("signature for current user", 10, 65);
+                                                        ^
+../src/dtw_06.cc:287:52: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("TEST_SIGN => Save test", 10, 85);
+                                                    ^
+../src/dtw_06.cc:288:56: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("signature for current user", 10, 95);
+                                                        ^
+../src/dtw_06.cc:289:59: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("COMP_DTW => Compute distance", 10, 115);
+                                                           ^
+../src/dtw_06.cc:290:54: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("to verificate signature", 10, 125);
+                                                      ^
+../src/dtw_06.cc:305:56: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("Please sign the screen for", 10, 50);
+                                                        ^
+../src/dtw_06.cc:306:49: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("template signature.", 10, 60);
+                                                 ^
+../src/dtw_06.cc:307:54: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("SAVE signature => BTN2.", 10, 200);
+                                                      ^
+../src/dtw_06.cc:316:57: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+     mydisp.drawText("DELETE signature => BTN3.", 10, 200);
+                                                         ^
+../src/dtw_06.cc:322:50: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+      mydisp.drawText("Signature deleted.", 10, 50);
+                                                  ^
+../src/dtw_06.cc:323:58: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+      mydisp.drawText("Please sign the screen for", 10, 60);
+                                                          ^
+../src/dtw_06.cc:324:51: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+      mydisp.drawText("template signature.", 10, 70);
+                                                   ^
+../src/dtw_06.cc:325:56: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+      mydisp.drawText("SAVE signature => BTN2.", 10, 200);
+                                                        ^
+../src/dtw_06.cc:346:56: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("Please sign the screen for", 10, 50);
+                                                        ^
+../src/dtw_06.cc:347:45: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("test signature.", 10, 60);
+                                             ^
+../src/dtw_06.cc:348:54: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+    mydisp.drawText("SAVE signature => BTN2.", 10, 200);
+                                                      ^
+../src/dtw_06.cc:357:57: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+     mydisp.drawText("DELETE signature => BTN3.", 10, 200);
+                                                         ^
+../src/dtw_06.cc:363:50: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+      mydisp.drawText("Signature deleted.", 10, 50);
+                                                  ^
+../src/dtw_06.cc:364:58: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+      mydisp.drawText("Please sign the screen for", 10, 60);
+                                                          ^
+../src/dtw_06.cc:365:47: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+      mydisp.drawText("test signature.", 10, 70);
+                                               ^
+../src/dtw_06.cc:366:56: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+      mydisp.drawText("SAVE signature => BTN2.", 10, 200);
+                                                        ^
+../src/dtw_06.cc: In function 'void get_input_from_mtds()':
+../src/dtw_06.cc:772:55: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+  mydisp.drawText("Signature saved in database", 10, 50);
+                                                       ^
+../src/dtw_06.cc: At global scope:
+../src/dtw_06.cc:94:12: warning: 'led_data' defined but not used [-Wunused-variable]
+ static int led_data;
+            ^~~~~~~~
+'Finished building: ../src/dtw_06.cc'
+' '
+'Building file: ../src/main.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/main.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cc"
+'Finished building: ../src/main.cc'
+' '
+'Building target: dtw_06.elf'
+'Invoking: ARM v7 g++ linker'
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../standalone_bsp_0/ps7_cortexa9_0/lib -o "dtw_06.elf"  ./src/dtw_06.o ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group
+'Finished building target: dtw_06.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size dtw_06.elf  |tee "dtw_06.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  83584	   3465	  24880	 111929	  1b539	dtw_06.elf
+'Finished building: dtw_06.elf.size'
+' '
+
+23:00:25 Build Finished (took 2s.211ms)
+

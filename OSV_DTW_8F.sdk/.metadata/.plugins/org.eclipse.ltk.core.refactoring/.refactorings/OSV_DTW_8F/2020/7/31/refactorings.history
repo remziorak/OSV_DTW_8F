@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;dtw_10/src/dtw_10.cc&apos; to &apos;OSV_DTW_8F.cc&apos;" description="Rename resource &apos;dtw_10.cc&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/dtw_10.cc" name="OSV_DTW_8F.cc" stamp="1595897413280" updateReferences="true"/>
+</session>

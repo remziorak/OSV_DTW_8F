@@ -1,0 +1,394 @@
+#include <stdio.h>
+#include "xparameters.h"
+#include "xgpio.h"
+#include "xil_io.h"
+#include "sleep.h"
+#include "xil_printf.h"
+#include "xscugic.h"
+
+/********************* Definition for DTW module *******************/
+#define DTW_BASEADDR 0x43C30000
+#define DTW_HIGHADDR 0x43C3FFFF
+
+#define REG0_OFFSET 0
+#define REG1_OFFSET 4
+#define REG2_OFFSET 8
+#define REG3_OFFSET 12
+#define REG4_OFFSET 16
+#define REG5_OFFSET 20
+
+/*******************************************************************/
+
+/*********************** Parameter Definitons **********************/
+
+#define BTNS_DEVICE_ID	XPAR_GPIO_0_DEVICE_ID
+#define SW_DEVICE_ID	XPAR_GPIO_1_DEVICE_ID
+#define LEDS_DEVICE_ID	XPAR_GPIO_2_DEVICE_ID
+
+/* Definitions for peripheral PS7_SCUGIC_0 */
+#define INTC_DEVICE_ID	XPAR_PS7_SCUGIC_0_DEVICE_ID
+
+/* Definitions for Fabric interrupts connected to ps7_scugic_0 */
+#define INTC_GPIO_INTERRUPT_ID XPAR_FABRIC_AXI_GPIO_0_IP2INTC_IRPT_INTR
+
+#define BTN_INT_CH	XGPIO_IR_CH1_MASK
+
+XGpio LEDInst, BTNInst, SWInst;
+XScuGic INTCInst;
+static int led_data;
+static int btn_value;
+static int sw_value;
+
+/*******************************************************************/
+
+enum sys_state_machine {
+	IDLE, TEMP_SIGN, TEST_SIGN, COMPUTE_DTW
+};
+
+enum button_pressed {
+	BTN1 = 1, BTN2, BTN3, BTN4
+};
+
+button_pressed btn_prs;
+static int btn_debounce_cntr = 0;
+
+// Initial system state is IDLE
+sys_state_machine current_state = IDLE;
+sys_state_machine next_state;
+
+//----------------------------------------------------
+// PROTOTYPE FUNCTIONS
+//----------------------------------------------------
+void define_current_state();
+static void BTN_Intr_Handler(void *baseaddr_p);
+static int InterruptSystemSetup(XScuGic *XScuGicInstancePtr);
+static int IntcInitFunction(u16 DeviceId, XGpio *GpioInstancePtr);
+
+void setup() {
+
+	int status;
+
+	//----------------------------------------------------
+	// INITIALIZE THE PERIPHERALS & SET DIRECTIONS OF GPIO
+	//----------------------------------------------------
+
+	// Initialise LEDs
+	status = XGpio_Initialize(&LEDInst, LEDS_DEVICE_ID);
+	if (status != XST_SUCCESS) {
+		xil_printf("LED Initialization Failed\r\n");
+	}
+
+	// Initialise Push Buttons
+	status = XGpio_Initialize(&BTNInst, BTNS_DEVICE_ID);
+	if (status != XST_SUCCESS) {
+		xil_printf("Push Buttons Initialization Failed\r\n");
+	}
+
+	// Initialise SW
+	status = XGpio_Initialize(&SWInst, SW_DEVICE_ID);
+	if (status != XST_SUCCESS) {
+		xil_printf("SW Initialization Failed\r\n");
+	}
+
+	// Set LEDs direction to outputs
+	XGpio_SetDataDirection(&LEDInst, 1, 0x00);
+	// Set all buttons direction to inputs
+	XGpio_SetDataDirection(&BTNInst, 1, 0xFF);
+	// Set all SW direction to inputs
+	XGpio_SetDataDirection(&SWInst, 1, 0xFF);
+
+	// Initialize interrupt controller
+	status = IntcInitFunction(INTC_DEVICE_ID, &BTNInst);
+	if (status != XST_SUCCESS) {
+		xil_printf("Interrupt Initialization Failed\r\n");
+	}
+
+}
+
+void loop() {
+
+	switch (current_state) {
+	case IDLE:
+		while (1) {
+			xil_printf("I am processing in IDLE state : main loop");
+		}
+		break;
+
+	case TEMP_SIGN:
+		while (1) {
+			xil_printf("I am processing in TEMP_SIGN state : main loop");
+		}
+		break;
+	case TEST_SIGN:
+		while (1) {
+			xil_printf("I am processing in TEST_SIGN state : main loop");
+		}
+		break;
+	case COMPUTE_DTW:
+		while (1) {
+			xil_printf("I am processing in COMPUTE_DTW state : main loop");
+		}
+		break;
+	}
+
+}
+
+void define_current_state() {
+
+	//Read SW[3:0] value
+	sw_value = XGpio_DiscreteRead(&SWInst, 1);
+
+	//Use SW[1:0] value to define current state of the system.
+	u8 state_sw_value = sw_value & 0x3;
+
+	switch (state_sw_value) {
+	case 0:
+		current_state = IDLE;
+		break;
+	case 1:
+		current_state = TEMP_SIGN;
+		break;
+	case 2:
+		current_state = TEST_SIGN;
+		break;
+	case 3:
+		current_state = COMPUTE_DTW;
+		break;
+	default:
+		xil_printf("Invalid state.");
+		break;
+	}
+}
+
+//----------------------------------------------------
+// INTERRUPT HANDLER FUNCTIONS
+// - called by the timer, button interrupt, performs
+// - LED flashing
+//----------------------------------------------------
+
+void BTN_Intr_Handler(void *InstancePtr) {
+
+	xil_printf("Giriþ\n");
+
+	btn_debounce_cntr += 1;
+
+	// Disable GPIO interrupts
+	XGpio_InterruptDisable(&BTNInst, BTN_INT_CH);
+
+	// Ignore additional button presses
+	if ((XGpio_InterruptGetStatus(&BTNInst) & BTN_INT_CH) != BTN_INT_CH) {
+		return;
+	}
+
+	//usleep(100000);
+
+	btn_value = XGpio_DiscreteRead(&BTNInst, 1);
+
+	//usleep(1000000);
+
+	if (btn_debounce_cntr == 1) {
+
+		// Check which button is pressed
+		if ((btn_value & 0x1))
+			btn_prs = BTN1;
+		else if (((btn_value & 0x2) >> 1))
+			btn_prs = BTN2;
+		else if (((btn_value & 0x4) >> 2))
+			btn_prs = BTN3;
+		else if (((btn_value & 0x8) >> 3))
+			btn_prs = BTN4;
+
+		switch (btn_prs) {
+		case BTN1:
+			xil_printf("BTN1 pressed\n");
+			define_current_state();
+			//	while(1);
+			break;
+
+		case BTN2:
+			xil_printf("BTN2 pressed\n");
+			//	while(1);
+			break;
+
+		case BTN3:
+			xil_printf("BTN3 pressed\n");
+			//	while(1);
+			break;
+
+		case BTN4:
+			xil_printf("BTN4 pressed\n");
+			//	while(1);
+			break;
+
+		}
+
+	}
+
+	if (btn_debounce_cntr == 2) {
+		btn_debounce_cntr = 0;
+	}
+
+	(void) XGpio_InterruptClear(&BTNInst, BTN_INT_CH);
+	// Enable GPIO interrupts
+	XGpio_InterruptEnable(&BTNInst, BTN_INT_CH);
+
+	xil_printf("Çýkýþ\n");
+
+}
+
+//----------------------------------------------------
+// INITIAL SETUP FUNCTIONS
+//----------------------------------------------------
+
+int InterruptSystemSetup(XScuGic *XScuGicInstancePtr) {
+	// Enable interrupt
+	XGpio_InterruptEnable(&BTNInst, BTN_INT_CH);
+	XGpio_InterruptGlobalEnable(&BTNInst);
+
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
+			(Xil_ExceptionHandler) XScuGic_InterruptHandler,
+			XScuGicInstancePtr);
+	Xil_ExceptionEnable();
+
+	return XST_SUCCESS;
+
+}
+
+int IntcInitFunction(u16 DeviceId, XGpio *GpioInstancePtr) {
+	XScuGic_Config *IntcConfig;
+	int status;
+
+	// Interrupt controller initialisation
+	IntcConfig = XScuGic_LookupConfig(DeviceId);
+	status = XScuGic_CfgInitialize(&INTCInst, IntcConfig,
+			IntcConfig->CpuBaseAddress);
+	if (status != XST_SUCCESS)
+		return XST_FAILURE;
+
+	// Call to interrupt setup
+	status = InterruptSystemSetup(&INTCInst);
+	if (status != XST_SUCCESS)
+		return XST_FAILURE;
+
+	// Connect GPIO interrupt to handler
+	status = XScuGic_Connect(&INTCInst,
+	INTC_GPIO_INTERRUPT_ID, (Xil_ExceptionHandler) BTN_Intr_Handler,
+			(void *) GpioInstancePtr);
+	if (status != XST_SUCCESS)
+		return XST_FAILURE;
+
+	// Enable GPIO interrupts interrupt
+	XGpio_InterruptEnable(GpioInstancePtr, 1);
+	XGpio_InterruptGlobalEnable(GpioInstancePtr);
+
+	// Enable GPIO and timer interrupts in the controller
+	XScuGic_Enable(&INTCInst, INTC_GPIO_INTERRUPT_ID);
+
+	return XST_SUCCESS;
+}
+
+#if 0
+
+void setup()
+{
+
+	int i;
+//    int t = 0;
+
+	u32 template_data = 0x00040005;
+	u32 test_data = 0x00010001;
+
+	xil_printf("Step 00 -> state     :  %d \n", Xil_In32((DTW_BASEADDR + REG2_OFFSET )));
+	xil_printf("Step 00 -> dtw_state :  %d \n",Xil_In32((DTW_BASEADDR + REG5_OFFSET )));
+
+	Xil_Out32((DTW_BASEADDR + REG2_OFFSET ), 0x0);
+
+	//write reset signal to reg3[1]
+	Xil_Out32((DTW_BASEADDR + REG3_OFFSET ), 0x3);
+	//  Xil_Out32((DTW_BASEADDR + REG3_OFFSET ), 0x3);
+
+	xil_printf("Step 01 -> state     :  %d \n", Xil_In32((DTW_BASEADDR + REG2_OFFSET )));
+	xil_printf("Step 01 -> dtw_state :  %d \n",Xil_In32((DTW_BASEADDR + REG5_OFFSET )));
+
+	// clear reset, set enable
+	Xil_Out32((DTW_BASEADDR + REG3_OFFSET ), 0x1);
+
+	xil_printf("Step 02 -> state     :  %d \n", Xil_In32((DTW_BASEADDR + REG2_OFFSET )));
+	xil_printf("Step 02 -> dtw_state :  %d \n",Xil_In32((DTW_BASEADDR + REG5_OFFSET )));
+
+	/* --------------------------Fill template data--------------------------- */
+
+	// set system status for filling template memory
+	Xil_Out32((DTW_BASEADDR + REG2_OFFSET ), 0x1);
+
+	xil_printf("Step 03 -> state     :  %d \n", Xil_In32((DTW_BASEADDR + REG2_OFFSET )));
+	xil_printf("Step 03 -> dtw_state :  %d \n",Xil_In32((DTW_BASEADDR + REG5_OFFSET )));
+
+	xil_printf("----- Fill Template Memory ----- \n");
+	for(i = 0; i<256; i++) {
+
+		// data address reg[1]
+		Xil_Out32((DTW_BASEADDR + REG1_OFFSET ), i);
+		//xil_printf("Write Address : %d",Xil_In32((DTW_BASEADDR + REG1_OFFSET )));
+
+		//input data reg[0]
+		Xil_Out32((DTW_BASEADDR + REG0_OFFSET ), template_data);
+		//xil_printf("   Write Data : %d \n",Xil_In32((DTW_BASEADDR + REG0_OFFSET )));
+
+	}
+
+	/* --------------------------Fill test data--------------------------- */
+	// set system status for filling test memory
+	Xil_Out32((DTW_BASEADDR + REG2_OFFSET ), 0x2);
+
+	xil_printf("----- Fill Test Memory ----- \n");
+	xil_printf("Step 04 -> state     :  %d \n", Xil_In32((DTW_BASEADDR + REG2_OFFSET )));
+	xil_printf("Step 04 -> dtw_state :  %d \n",Xil_In32((DTW_BASEADDR + REG5_OFFSET )));
+
+	for(i = 0; i<256; i++) {
+
+		// data address reg[1]
+		Xil_Out32((DTW_BASEADDR + REG1_OFFSET ), i);
+		//xil_printf("Write Address : %d",Xil_In32((DTW_BASEADDR + REG1_OFFSET )));
+
+		//input data reg[0]
+		Xil_Out32((DTW_BASEADDR + REG0_OFFSET ), test_data);
+		//xil_printf("   Write Data : %d \n",Xil_In32((DTW_BASEADDR + REG0_OFFSET )));
+
+	}
+
+	xil_printf("Step 05 -> state     :  %d \n", Xil_In32((DTW_BASEADDR + REG2_OFFSET )));
+	xil_printf("Step 05 -> dtw_state :  %d \n",Xil_In32((DTW_BASEADDR + REG5_OFFSET )));
+
+	/* --------------------------Enable DTW Calculation--------------------------- */
+	Xil_Out32((DTW_BASEADDR + REG2_OFFSET ), 0x3);
+
+	xil_printf("Step 06 -> state     :  %d \n", Xil_In32((DTW_BASEADDR + REG2_OFFSET )));
+	xil_printf("Step 06 -> dtw_state :  %d \n",Xil_In32((DTW_BASEADDR + REG5_OFFSET )));
+
+	xil_printf("Step 07 -> state     :  %d \n", Xil_In32((DTW_BASEADDR + REG2_OFFSET )));
+	xil_printf("Step 07 -> dtw_state :  %d \n",Xil_In32((DTW_BASEADDR + REG5_OFFSET )));
+
+	//check finish sign reg[5]
+	u32 finish_sign;
+	do {
+		finish_sign = Xil_In32((DTW_BASEADDR + REG5_OFFSET ));
+//    	xil_printf("%d\n", finish_sign);
+	}while(finish_sign!=9);
+
+	xil_printf("%d\n", finish_sign);
+
+	xil_printf("%d \n", Xil_In32((DTW_BASEADDR + REG4_OFFSET )));
+
+}
+
+void loop() {
+
+//	xil_printf("%d \n", Xil_In32((DTW_BASEADDR + REG5_OFFSET )));
+	// score
+//	xil_printf("%d \n", Xil_In32((DTW_BASEADDR + REG4_OFFSET )));
+
+}
+
+#endif
+

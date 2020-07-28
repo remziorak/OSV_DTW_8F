@@ -1,0 +1,306 @@
+03:35:27 **** Incremental Build of configuration Debug for project dtw_10 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_10.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_10.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_10.d" -MT"src/dtw_10.o" -o "src/dtw_10.o" "../src/dtw_10.cc"
+../src/dtw_10.cc: In function 'void loop()':
+../src/dtw_10.cc:65:25: error: 'XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR' was not declared in this scope
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_10.cc:65:25: note: in definition of macro 'DTW_2F_BASEADDR'
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_10.cc:65:25: note: suggested alternative: 'XPAR_DTW_8F_32BIT_0_BASEADDR'
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_10.cc:65:25: note: in definition of macro 'DTW_2F_BASEADDR'
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_10.cc:68:25: error: 'XPAR_DTW_4F_32BIT_0_BASEADDR' was not declared in this scope
+ #define DTW_4F_BASEADDR XPAR_DTW_4F_32BIT_0_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_10.cc:466:15: note: in expansion of macro 'DTW_4F_BASEADDR'
+    Xil_Out32((DTW_4F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+../src/dtw_10.cc:68:25: note: suggested alternative: 'XPAR_DTW_8F_32BIT_0_BASEADDR'
+ #define DTW_4F_BASEADDR XPAR_DTW_4F_32BIT_0_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_10.cc:466:15: note: in expansion of macro 'DTW_4F_BASEADDR'
+    Xil_Out32((DTW_4F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+../src/dtw_10.cc: At global scope:
+../src/dtw_10.cc:99:12: warning: 'led_data' defined but not used [-Wunused-variable]
+ static int led_data;
+            ^~~~~~~~
+make: *** [src/subdir.mk:26: src/dtw_10.o] Error 1
+03:36:38 **** Auto Build of configuration Debug for project dtw_10 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_10.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_10.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_10.d" -MT"src/dtw_10.o" -o "src/dtw_10.o" "../src/dtw_10.cc"
+../src/dtw_10.cc: In function 'void loop()':
+../src/dtw_10.cc:65:25: error: 'XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR' was not declared in this scope
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_10.cc:65:25: note: in definition of macro 'DTW_2F_BASEADDR'
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_10.cc:65:25: note: suggested alternative: 'XPAR_DTW_8F_32BIT_0_BASEADDR'
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_10.cc:65:25: note: in definition of macro 'DTW_2F_BASEADDR'
+ #define DTW_2F_BASEADDR XPAR_DTW_2F_32BIT_0_S00_AXI_BASEADDR
+                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/dtw_10.cc:462:15: error: 'DTW_4F_BASEADDR' was not declared in this scope
+    Xil_Out32((DTW_4F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+../src/dtw_10.cc:462:15: note: suggested alternative: 'DTW_2F_BASEADDR'
+    Xil_Out32((DTW_4F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+               DTW_2F_BASEADDR
+../src/dtw_10.cc:580:15: error: 'DTW_8F_BASEADDR' was not declared in this scope
+    Xil_Out32((DTW_8F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+../src/dtw_10.cc:580:15: note: suggested alternative: 'DTW_2F_BASEADDR'
+    Xil_Out32((DTW_8F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+               DTW_2F_BASEADDR
+../src/dtw_10.cc: At global scope:
+../src/dtw_10.cc:95:12: warning: 'led_data' defined but not used [-Wunused-variable]
+ static int led_data;
+            ^~~~~~~~
+make: *** [src/subdir.mk:26: src/dtw_10.o] Error 1
+03:37:48 **** Auto Build of configuration Debug for project dtw_10 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_10.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_10.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_10.d" -MT"src/dtw_10.o" -o "src/dtw_10.o" "../src/dtw_10.cc"
+../src/dtw_10.cc: In function 'void loop()':
+../src/dtw_10.cc:399:15: error: 'DTW_2F_BASEADDR' was not declared in this scope
+    Xil_Out32((DTW_2F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+../src/dtw_10.cc:399:15: note: suggested alternative: 'DTW_8F_BASEADDR'
+    Xil_Out32((DTW_2F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+               DTW_8F_BASEADDR
+../src/dtw_10.cc:462:15: error: 'DTW_4F_BASEADDR' was not declared in this scope
+    Xil_Out32((DTW_4F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+../src/dtw_10.cc:462:15: note: suggested alternative: 'DTW_8F_BASEADDR'
+    Xil_Out32((DTW_4F_BASEADDR + REG2_OFFSET), 0x0);
+               ^~~~~~~~~~~~~~~
+               DTW_8F_BASEADDR
+../src/dtw_10.cc: At global scope:
+../src/dtw_10.cc:95:12: warning: 'led_data' defined but not used [-Wunused-variable]
+ static int led_data;
+            ^~~~~~~~
+make: *** [src/subdir.mk:26: src/dtw_10.o] Error 1
+03:38:51 **** Auto Build of configuration Debug for project dtw_10 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_10.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_10.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_10.d" -MT"src/dtw_10.o" -o "src/dtw_10.o" "../src/dtw_10.cc"
+../src/dtw_10.cc:94:12: warning: 'led_data' defined but not used [-Wunused-variable]
+ static int led_data;
+            ^~~~~~~~
+'Finished building: ../src/dtw_10.cc'
+' '
+'Building file: ../src/main.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/main.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cc"
+'Finished building: ../src/main.cc'
+' '
+'Building target: dtw_10.elf'
+'Invoking: ARM v7 g++ linker'
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../standalone_bsp_0/ps7_cortexa9_0/lib -o "dtw_10.elf"  ./src/dtw_10.o ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group -Wl,--start-group,-lxilffs,-lxil,-lgcc,-lc,--end-group
+'Finished building target: dtw_10.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size dtw_10.elf  |tee "dtw_10.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  85928	   3465	  24880	 114273	  1be61	dtw_10.elf
+'Finished building: dtw_10.elf.size'
+' '
+03:40:19 **** Auto Build of configuration Debug for project dtw_10 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_10.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_10.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_10.d" -MT"src/dtw_10.o" -o "src/dtw_10.o" "../src/dtw_10.cc"
+../src/dtw_10.cc:94:12: warning: 'led_data' defined but not used [-Wunused-variable]
+ static int led_data;
+            ^~~~~~~~
+'Finished building: ../src/dtw_10.cc'
+' '
+'Building target: dtw_10.elf'
+'Invoking: ARM v7 g++ linker'
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../standalone_bsp_0/ps7_cortexa9_0/lib -o "dtw_10.elf"  ./src/dtw_10.o ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group -Wl,--start-group,-lxilffs,-lxil,-lgcc,-lc,--end-group
+'Finished building target: dtw_10.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size dtw_10.elf  |tee "dtw_10.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  85928	   3465	  24880	 114273	  1be61	dtw_10.elf
+'Finished building: dtw_10.elf.size'
+' '
+03:40:26 **** Auto Build of configuration Debug for project dtw_10 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_10.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_10.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_10.d" -MT"src/dtw_10.o" -o "src/dtw_10.o" "../src/dtw_10.cc"
+../src/dtw_10.cc: In function 'void loop()':
+../src/dtw_10.cc:388:7: warning: unused variable 'dtw_score' [-Wunused-variable]
+   u32 dtw_score;
+       ^~~~~~~~~
+../src/dtw_10.cc:389:7: warning: unused variable 'finish_sign' [-Wunused-variable]
+   u32 finish_sign;
+       ^~~~~~~~~~~
+../src/dtw_10.cc: At global scope:
+../src/dtw_10.cc:94:12: warning: 'led_data' defined but not used [-Wunused-variable]
+ static int led_data;
+            ^~~~~~~~
+'Finished building: ../src/dtw_10.cc'
+' '
+'Building target: dtw_10.elf'
+'Invoking: ARM v7 g++ linker'
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../standalone_bsp_0/ps7_cortexa9_0/lib -o "dtw_10.elf"  ./src/dtw_10.o ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group -Wl,--start-group,-lxilffs,-lxil,-lgcc,-lc,--end-group
+'Finished building target: dtw_10.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size dtw_10.elf  |tee "dtw_10.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  84496	   3465	  24888	 112849	  1b8d1	dtw_10.elf
+'Finished building: dtw_10.elf.size'
+' '
+03:49:11 **** Auto Build of configuration Debug for project dtw_10 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_10.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_10.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_10.d" -MT"src/dtw_10.o" -o "src/dtw_10.o" "../src/dtw_10.cc"
+../src/dtw_10.cc:93:12: warning: 'led_data' defined but not used [-Wunused-variable]
+ static int led_data;
+            ^~~~~~~~
+'Finished building: ../src/dtw_10.cc'
+' '
+'Building target: dtw_10.elf'
+'Invoking: ARM v7 g++ linker'
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../standalone_bsp_0/ps7_cortexa9_0/lib -o "dtw_10.elf"  ./src/dtw_10.o ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group -Wl,--start-group,-lxilffs,-lxil,-lgcc,-lc,--end-group
+'Finished building target: dtw_10.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size dtw_10.elf  |tee "dtw_10.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  85816	   3465	  24880	 114161	  1bdf1	dtw_10.elf
+'Finished building: dtw_10.elf.size'
+' '
+03:49:33 **** Auto Build of configuration Debug for project dtw_10 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/dtw_10.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dtw_10.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/dtw_10.d" -MT"src/dtw_10.o" -o "src/dtw_10.o" "../src/dtw_10.cc"
+'Finished building: ../src/dtw_10.cc'
+' '
+'Building target: dtw_10.elf'
+'Invoking: ARM v7 g++ linker'
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../standalone_bsp_0/ps7_cortexa9_0/lib -o "dtw_10.elf"  ./src/dtw_10.o ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group -Wl,--start-group,-lxilffs,-lxil,-lgcc,-lc,--end-group
+'Finished building target: dtw_10.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size dtw_10.elf  |tee "dtw_10.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  85816	   3465	  24880	 114161	  1bdf1	dtw_10.elf
+'Finished building: dtw_10.elf.size'
+' '
+03:50:13 **** Clean-only build of configuration Debug for project dtw_10 ****
+make clean 
+rm -rf  ./src/dtw_10.d ./src/main.d  ./src/dtw_10.o ./src/main.o  dtw_10.elf.size  dtw_10.elf
+' '
+03:50:14 **** Auto Build of configuration Debug for project dtw_10 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/OSV_DTW_8F.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/OSV_DTW_8F.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/OSV_DTW_8F.d" -MT"src/OSV_DTW_8F.o" -o "src/OSV_DTW_8F.o" "../src/OSV_DTW_8F.cc"
+'Finished building: ../src/OSV_DTW_8F.cc'
+' '
+'Building file: ../src/main.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/main.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cc"
+'Finished building: ../src/main.cc'
+' '
+'Building target: dtw_10.elf'
+'Invoking: ARM v7 g++ linker'
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../standalone_bsp_0/ps7_cortexa9_0/lib -o "dtw_10.elf"  ./src/OSV_DTW_8F.o ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group -Wl,--start-group,-lxilffs,-lxil,-lgcc,-lc,--end-group
+'Finished building target: dtw_10.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size dtw_10.elf  |tee "dtw_10.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  85816	   3465	  24880	 114161	  1bdf1	dtw_10.elf
+'Finished building: dtw_10.elf.size'
+' '
+03:51:38 **** Clean-only build of configuration Debug for project OSV_DTW_8F ****
+make clean 
+rm -rf  ./src/OSV_DTW_8F.d ./src/main.d  ./src/OSV_DTW_8F.o ./src/main.o  dtw_10.elf.size  dtw_10.elf
+' '
+03:51:38 **** Build of configuration Debug for project OSV_DTW_8F ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/OSV_DTW_8F.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/OSV_DTW_8F.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/OSV_DTW_8F.d" -MT"src/OSV_DTW_8F.o" -o "src/OSV_DTW_8F.o" "../src/OSV_DTW_8F.cc"
+'Finished building: ../src/OSV_DTW_8F.cc'
+' '
+'Building file: ../src/main.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/main.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.cc"
+'Finished building: ../src/main.cc'
+' '
+'Building target: OSV_DTW_8F.elf'
+'Invoking: ARM v7 g++ linker'
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../standalone_bsp_0/ps7_cortexa9_0/lib -o "OSV_DTW_8F.elf"  ./src/OSV_DTW_8F.o ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group -Wl,--start-group,-lxilffs,-lxil,-lgcc,-lc,--end-group
+'Finished building target: OSV_DTW_8F.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size OSV_DTW_8F.elf  |tee "OSV_DTW_8F.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  85816	   3465	  24880	 114161	  1bdf1	OSV_DTW_8F.elf
+'Finished building: OSV_DTW_8F.elf.size'
+' '
+03:52:13 **** Auto Build of configuration Debug for project OSV_DTW_8F ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/OSV_DTW_8F.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/OSV_DTW_8F.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../standalone_bsp_0/ps7_cortexa9_0/include -MMD -MP -MF"src/OSV_DTW_8F.d" -MT"src/OSV_DTW_8F.o" -o "src/OSV_DTW_8F.o" "../src/OSV_DTW_8F.cc"
+'Finished building: ../src/OSV_DTW_8F.cc'
+' '
+'Building target: OSV_DTW_8F.elf'
+'Invoking: ARM v7 g++ linker'
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L../../standalone_bsp_0/ps7_cortexa9_0/lib -o "OSV_DTW_8F.elf"  ./src/OSV_DTW_8F.o ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group -Wl,--start-group,-lxilffs,-lxil,-lgcc,-lc,--end-group
+'Finished building target: OSV_DTW_8F.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size OSV_DTW_8F.elf  |tee "OSV_DTW_8F.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  85816	   3465	  24880	 114161	  1bdf1	OSV_DTW_8F.elf
+'Finished building: OSV_DTW_8F.elf.size'
+' '

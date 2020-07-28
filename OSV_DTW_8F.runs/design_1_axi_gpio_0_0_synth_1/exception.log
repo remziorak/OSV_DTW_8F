@@ -1,0 +1,4 @@
+ERROR: Exception caught trying to open file C:\Users\REV\VivadoProjects\ZYNQ_DTW\mtds_demo_2\mtds_demo_1.runs\design_1_axi_gpio_0_0_synth_1/runme.log
+	Exception name: Error
+	Exception error code: 70
+	Exception message: Ýzin verilmedi

@@ -1,0 +1,15 @@
+00:06:39 **** Build of configuration Debug for project mtds_demo_04 ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+'Building file: ../src/MtdsDemo4.cc'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/MtdsDemo4.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I../../mtds_demo_04_bsp/ps7_cortexa9_0/include -MMD -MP -MF"src/MtdsDemo4.d" -MT"src/MtdsDemo4.o" -o "src/MtdsDemo4.o" "../src/MtdsDemo4.cc"
+../src/MtdsDemo4.cc:37:10: fatal error: mtds.h: No such file or directory
+ #include <mtds.h>
+          ^~~~~~~~
+compilation terminated.
+make: *** [src/subdir.mk:26: src/MtdsDemo4.o] Error 1
+
+00:06:40 Build Finished (took 588ms)
+

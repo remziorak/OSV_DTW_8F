@@ -23,7 +23,7 @@ MTDS and FPGA wire connection given in following image.
 </p>
 
 
-## RTL SCHEMATİC
+## System Block Design
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/45906647/88619823-1cd31c00-d0a5-11ea-9772-7dbe01ecd0c5.png" alt="RTL Schematic of the System" width=750 />
@@ -40,3 +40,6 @@ MTDS and FPGA wire connection given in following image.
 | BRAM     | 3           | 140       | 2.14            |
 | DSP      | 8           | 220       | 3.63            |
 | IO       | 16          | 125       | 12.8            |
+
+
+

@@ -13,11 +13,10 @@
 #include <MyDisp.h>
 #include <math.h>
 
+#include "xtime_l.h"
+
 #define maxSample 256
 #define numOfUsers  4
-
-// Threshold value for decision function
-#define DTW_8F_threshold 800
 
 /*
  * To collect signature features and DTW scores
@@ -94,6 +93,9 @@ static int btn_value;
 static int sw_value;
 static int user_ID;
 
+// Threshold values for decision function
+u32 DTW_8F_threshold[numOfUsers] = { 881, 708, 751, 875 };
+
 /*******************************************************************/
 
 enum sys_state_machine {
@@ -110,6 +112,9 @@ static int btn_debounce_cntr = 0;
 // Initial system state is IDLE
 sys_state_machine current_state = IDLE;
 sys_state_machine next_state;
+
+//To measure the time
+XTime tStart, tEnd;
 
 //----------------------------------------------------
 // PROTOTYPE FUNCTIONS
@@ -245,7 +250,7 @@ void setup() {
 	mtds.LineTo(hdsFng1, 0, 39);
 	mtds.LineTo(hdsFng1, 0, 0);
 
-	//burada kaydedilen pixel sayýsý arttýrýldý
+	//burada kaydedilen pixel sayisi arttirildi
 	mtds.SetTchMoveDelta(3, 3);
 
 	/**************************************************************/
@@ -474,6 +479,8 @@ void loop() {
 
 			current_sign_ptr = test_sign_ptr[user_ID];
 
+			XTime_GetTime(&tStart);
+
 			// set system status for filling test memory
 			Xil_Out32((DTW_8F_BASEADDR + REG2_OFFSET), 0x2);
 
@@ -545,6 +552,13 @@ void loop() {
 				Xil_Out32((DTW_8F_BASEADDR + REG0_OFFSET), test_data);
 			}
 
+			XTime_GetTime(&tEnd);
+
+			printf("Mask and Transfer took %llu clock cycles.\n", 2 * (tEnd - tStart));
+			printf("Mask and Transfer took %.2f us.\n",
+					1.0 * (tEnd - tStart) / (COUNTS_PER_SECOND / 1000000));
+
+			XTime_GetTime(&tStart);
 			/* --------------------------Enable DTW Calculation--------------------------- */
 			Xil_Out32((DTW_8F_BASEADDR + REG2_OFFSET), 0x3);
 
@@ -559,10 +573,15 @@ void loop() {
 			//read DTW score from reg[4]
 			dtw_score = Xil_In32((DTW_8F_BASEADDR + REG4_OFFSET));
 
+			XTime_GetTime(&tEnd);
+
+			printf("DTW took %llu clock cycles.\n", 2 * (tEnd - tStart));
+			printf("DTW took %.2f us.\n", 1.0 * (tEnd - tStart) / (COUNTS_PER_SECOND / 1000000));
+
 			xil_printf("DTW_8F score  : %d \n", dtw_score);
 			xil_printf("********************************************************\n");
 
-			print_decision_to_MTDS(dtw_score, DTW_8F_threshold);
+			print_decision_to_MTDS(dtw_score, DTW_8F_threshold[user_ID]);
 
 			while (current_state == COMPUTE_DTW) {
 				mydisp.drawText((char*) "System computed the distance.", 9, 70);
@@ -596,7 +615,7 @@ void get_input_from_mtds() {
 		if (i >= maxSample) {
 			// If user sign longer than max sample
 			// program cannot exit the loop.
-			check_btn_prs();
+			//	check_btn_prs();
 			continue;
 		}
 
@@ -672,6 +691,8 @@ void get_input_from_mtds() {
 
 	}
 
+	XTime_GetTime(&tStart);
+
 	/**********************  Feature Extraction and Filling Memory  **********************/
 
 	for (unsigned int j = 0; j < i; j++) {
@@ -723,6 +744,12 @@ void get_input_from_mtds() {
 		}
 	}
 
+	XTime_GetTime(&tEnd);
+
+	printf("Feature Extraction took %llu clock cycles.\n", 2 * (tEnd - tStart));
+	printf("Feature Extraction took %.2f us.\n",
+			1.0 * (tEnd - tStart) / (COUNTS_PER_SECOND / 1000000));
+
 	xil_printf("Signature saved in database. \n");
 	mydisp.clearDisplay(clrBlack);
 	draw_bottom_rectangle();
@@ -769,7 +796,12 @@ void define_current_state() {
 
 void check_btn_prs() {
 
+	for (int i = 0; i < 50; i++) {
+		usleep(1);
+	}
+
 	btn_value = XGpio_DiscreteRead(&BTNInst, 1);
+	xil_printf("%d\n", btn_value);
 
 	// Check which button is pressed
 	if ((btn_value & 0x1)) {
@@ -786,9 +818,7 @@ void check_btn_prs() {
 		btn_prs = BTN4;
 		xil_printf("BTN4 pressed\n");
 		xil_printf("///////////////////////////////////////////////////////\n");
-		xil_printf("///////////////////////////////////////////////////////\n");
-		xil_printf("///////////////////////////////////////////////////////\n");
-		xil_printf("///////////////////////////////////////////////////////\n");
+
 	}
 
 }
@@ -800,6 +830,8 @@ void check_btn_prs() {
 //----------------------------------------------------
 
 void BTN_Intr_Handler(void *InstancePtr) {
+
+	//xil_printf("interrupt occured\n");
 
 	btn_debounce_cntr += 1;
 
@@ -813,7 +845,6 @@ void BTN_Intr_Handler(void *InstancePtr) {
 
 	if (btn_debounce_cntr == 1) {
 		check_btn_prs();
-
 	}
 
 	if (btn_debounce_cntr == 2) {
@@ -875,7 +906,7 @@ int IntcInitFunction(u16 DeviceId, XGpio *GpioInstancePtr) {
 }
 
 void print_decision_to_MTDS(u32 dtw_score, u32 threshold) {
-
+	XTime_GetTime(&tStart);
 	if (dtw_score <= threshold) {
 		mydisp.setForeground(clrDkGreen);
 		mydisp.drawText((char*) "Verified", 140, 290);
@@ -890,8 +921,14 @@ void print_decision_to_MTDS(u32 dtw_score, u32 threshold) {
 		mydisp.drawImage((char*) "BmpLib/led_48x48_r_on.bmp", 95, 120);
 		mydisp.drawImage((char*) "BmpLib/led_48x48_r_on.bmp", 165, 120);
 		mydisp.setForeground(clrWhite);
+
 	}
 
+	XTime_GetTime(&tEnd);
+
+	printf("print_decision_to_MTDSn took %llu clock cycles.\n", 2 * (tEnd - tStart));
+	printf("print_decision_to_MTDS took %.2f us.\n",
+			1.0 * (tEnd - tStart) / (COUNTS_PER_SECOND / 1000000));
 }
 
 void print_sign_coords() {
@@ -931,3 +968,4 @@ void draw_bottom_rectangle() {
 	mydisp.setBackground(clrRed);
 	mydisp.drawRectangle(false, 10, 260, 230, 310);
 }
+
